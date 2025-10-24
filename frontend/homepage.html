@@ -37,6 +37,20 @@
             align-items: center;
             margin: 0 60px;
         }
+        .icon-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+        .icon-btn:focus,
+        .icon-btn:hover {
+            box-shadow: 0 0 0 4px #8caeed55;
+        }
         .icon-bg {
             width: 170px;
             height: 170px;
@@ -103,7 +117,7 @@
             background: #e7a6f7;
             border-radius: 6px 6px 1px 1px;
         }
-        .btn {
+        .btn, .icon-btn-label {
             padding: 8px 28px;
             border: none;
             border-radius: 18px;
@@ -115,8 +129,11 @@
             color: white;
             box-shadow: 0 2px 12px 0 rgba(160,0,174,0.07);
             transition: background 0.3s;
+            text-align: center;
+            outline: none;
         }
-        .btn:hover {
+        .icon-btn-label:hover,
+        .icon-btn:focus .icon-btn-label {
             background: linear-gradient(120deg, #7fd4ea, #e7abfc);
         }
     </style>
@@ -125,16 +142,22 @@
 <canvas class="bubble-bg"></canvas>
 <div class="container">
     <div class="icon-box">
-        <div class="icon-bg">
-            <div class="icon-user"></div>
-        </div>
-        <button class="btn">Account Information</button>
+        <button class="icon-btn" onclick="alert('Account Information Clicked')">
+            <div class="icon-bg">
+                <!-- Use your own image here -->
+                <div class="icon-user"></div>
+            </div>
+            <span class="icon-btn-label">Account Information</span>
+        </button>
     </div>
     <div class="icon-box">
-        <div class="icon-bg">
-            <div class="icon-folder"></div>
-        </div>
-        <button class="btn">Access Files</button>
+        <button class="icon-btn" onclick="alert('Access Files Clicked')">
+            <div class="icon-bg">
+                <!-- Use your own image here -->
+                <div class="icon-folder"></div>
+            </div>
+            <span class="icon-btn-label">Access Files</span>
+        </button>
     </div>
 </div>
 <script>
