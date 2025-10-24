@@ -3,51 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <title>Homepage</title>
-    <link rel="stylesheet" href="styles/homepage.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #e7a6f7, #8caeed, #78e9dc);
+            position: relative;
+            overflow: hidden;
+        }
+        .bubble-bg {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .icon-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 60px;
+        }
+        .icon-bg {
+            width: 170px;
+            height: 170px;
+            border-radius: 32px;
+            background: linear-gradient(120deg, #eed1fdbb, #daffff99);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 24px 0 rgba(160,0,174,0.07);
+        }
+        .icon-user {
+            width: 80px;
+            height: 80px;
+            background: none;
+            border-radius: 50%;
+            position: relative;
+        }
+        .icon-user:before {
+            content: '';
+            display: block;
+            background: #8bc4e8;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            position: absolute;
+            top: 0; left: 18px;
+        }
+        .icon-user:after {
+            content: '';
+            display: block;
+            background: #e7a6f7;
+            width: 70px;
+            height: 30px;
+            border-radius: 14px 14px 18px 18px;
+            position: absolute;
+            bottom: 0; left: 5px;
+        }
+        .icon-folder {
+            width: 80px;
+            height: 80px;
+            background: none;
+            position: relative;
+        }
+        .icon-folder:before {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 12px;
+            top: 32px;
+            width: 56px;
+            height: 36px;
+            background: #8bc4e8;
+            border-radius: 8px;
+        }
+        .icon-folder:after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 12px;
+            top: 20px;
+            width: 32px;
+            height: 14px;
+            background: #e7a6f7;
+            border-radius: 6px 6px 1px 1px;
+        }
+        .btn {
+            padding: 8px 28px;
+            border: none;
+            border-radius: 18px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 6px;
+            background: linear-gradient(120deg, #aeb8ff, #e7a6f7);
+            color: white;
+            box-shadow: 0 2px 12px 0 rgba(160,0,174,0.07);
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: linear-gradient(120deg, #7fd4ea, #e7abfc);
+        }
+    </style>
 </head>
 <body>
-    <div class="bubble-bg">
-        <div class="main-content">
-            <div class="icon-block">
-                <div class="icon account-icon">
-                    <!-- User Info SVG/Emoji -->
-                    <svg width="96" height="96" viewBox="0 0 96 96">
-                        <rect x="9" y="9" width="78" height="78" rx="24" fill="url(#grad1)"/>
-                        <g>
-                            <circle cx="48" cy="38" r="16" fill="#fff" opacity="0.7"/>
-                            <rect x="28" y="58" width="40" height="20" rx="10" fill="#fff" opacity="0.5"/>
-                        </g>
-                        <defs>
-                            <linearGradient id="grad1" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#e7b7ee"/>
-                                <stop offset="1" stop-color="#a9d5ef"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-                <button class="action-btn info-btn">Account Information</button>
-            </div>
-            <div class="icon-block">
-                <div class="icon files-icon">
-                    <!-- Folder SVG/Emoji -->
-                    <svg width="96" height="96" viewBox="0 0 96 96">
-                        <rect x="9" y="9" width="78" height="78" rx="24" fill="url(#grad2)"/>
-                        <g>
-                            <rect x="28" y="38" width="40" height="24" rx="6" fill="#fff" opacity="0.7"/>
-                            <rect x="36" y="34" width="24" height="10" rx="3" fill="#fff" opacity="0.5"/>
-                        </g>
-                        <defs>
-                            <linearGradient id="grad2" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#e7b7ee"/>
-                                <stop offset="1" stop-color="#a9d5ef"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-                <button class="action-btn files-btn">Access Files</button>
-            </div>
+<canvas class="bubble-bg"></canvas>
+<div class="container">
+    <div class="icon-box">
+        <div class="icon-bg">
+            <div class="icon-user"></div>
         </div>
+        <button class="btn">Account Information</button>
     </div>
-    <script src="script.js"></script>
+    <div class="icon-box">
+        <div class="icon-bg">
+            <div class="icon-folder"></div>
+        </div>
+        <button class="btn">Access Files</button>
+    </div>
+</div>
+<script>
+const canvas = document.querySelector('.bubble-bg');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    drawBubbles();
+}
+
+function drawBubbles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Top and Bottom bubble parameters with variation
+    const baseRows = [
+        { baseY: 60, minR: 36, maxR: 70, offset: 30 }, // Top row
+        { baseY: canvas.height - 55, minR: 42, maxR: 85, offset: 34 } // Bottom row
+    ];
+    baseRows.forEach(row => {
+        let bubbles = [];
+        let x = 0;
+        while (x < canvas.width) {
+            let r = Math.floor(Math.random() * (row.maxR - row.minR) + row.minR);
+            // random vertical offset added to baseY, both positive and negative
+            let y = row.baseY + (Math.random() - 0.5) * row.offset * 2;
+            bubbles.push({ x: x + Math.floor(r * 0.8), y, r });
+            x += r * 1.12 + Math.random() * 28; // randomize spacing a bit
+        }
+        bubbles.forEach(b => {
+            const grad = ctx.createRadialGradient(b.x, b.y, b.r * 0.2, b.x, b.y, b.r);
+            grad.addColorStop(0, '#e7a6f7d0');
+            grad.addColorStop(0.5, '#8caeed90');
+            grad.addColorStop(1, '#78e9dc00');
+            ctx.beginPath();
+            ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#fff6";
+            ctx.stroke();
+        });
+    });
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+</script>
 </body>
 </html>
