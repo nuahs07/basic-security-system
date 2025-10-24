@@ -189,10 +189,11 @@ function drawBubbles() {
             x += r * 1.12 + Math.random() * 28; // randomize spacing a bit
         }
         bubbles.forEach(b => {
-            const grad = ctx.createRadialGradient(b.x, b.y, b.r * 0.2, b.x, b.y, b.r);
+            // Linear gradient: left color (start) to right color (end) of bubble
+            const grad = ctx.createLinearGradient(b.x - b.r, b.y, b.x + b.r, b.y);
             grad.addColorStop(0, '#e7a6f7d0');
-            grad.addColorStop(0.5, '#8caeed90');
-            grad.addColorStop(1, '#78e9dc00');
+            grad.addColorStop(0.6, '#8caeed90');
+            grad.addColorStop(1, '#78e9dc40');
             ctx.beginPath();
             ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
             ctx.fillStyle = grad;
@@ -203,6 +204,7 @@ function drawBubbles() {
         });
     });
 }
+
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 </script>
