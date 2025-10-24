@@ -1,0 +1,1 @@
+# Module for initializing and managing the connection to Supabase

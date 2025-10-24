@@ -1,0 +1,1 @@
+# Endpoints for accessing/encrypting the security file
