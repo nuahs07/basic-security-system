@@ -4,10 +4,26 @@
     <meta charset="UTF-8">
     <title>Homepage</title>
     <style>
+        :root{
+            /* Keep original sizes as minimum, scale up with viewport */
+            --icon-bg-size: clamp(170px, 14vw, 300px); /* min 170px */
+            --icon-inner-pct: 0.47; /* ~80/170 */
+            --icon-inner-size: calc(var(--icon-bg-size) * var(--icon-inner-pct));
+            --icon-radius: calc(var(--icon-bg-size) * 0.188); /* ~32px @170px */
+            --btn-font-size: clamp(1.1em, calc(var(--icon-bg-size) * 0.08), 1.3em);
+            --btn-vert-padding: clamp(8px, calc(var(--icon-bg-size) * 0.03), 16px);
+            --btn-horiz-padding: clamp(28px, calc(var(--icon-bg-size) * 0.12), 40px);
+            --container-padding: clamp(20px, 3vw, 80px);
+            --container-gap: clamp(60px, 8vw, 140px); /* spacing between buttons and to edges */
+        }
+
+        html, body {
+            height: 100%;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            height: 100vh;
             box-sizing: border-box;
             font-family: 'Segoe UI', Arial, sans-serif;
             background: linear-gradient(120deg, #e7a6f7, #8caeed, #78e9dc);
@@ -30,12 +46,15 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            padding: 0 var(--container-padding);
+            gap: var(--container-gap);
+            box-sizing: border-box;
         }
         .icon-box {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0 60px;
+            margin: 0; /* spacing handled by container gap & padding */
         }
         .icon-btn {
             display: flex;
@@ -52,9 +71,9 @@
             box-shadow: 0 0 0 4px #8caeed55;
         }
         .icon-bg {
-            width: 170px;
-            height: 170px;
-            border-radius: 32px;
+            width: var(--icon-bg-size);
+            height: var(--icon-bg-size);
+            border-radius: var(--icon-radius);
             background: linear-gradient(120deg, #eed1fdbb, #daffff99);
             display: flex;
             align-items: center;
@@ -63,8 +82,8 @@
             box-shadow: 0 2px 24px 0 rgba(160,0,174,0.07);
         }
         .icon-user {
-            width: 80px;
-            height: 80px;
+            width: var(--icon-inner-size);
+            height: var(--icon-inner-size);
             background: none;
             border-radius: 50%;
             position: relative;
@@ -73,25 +92,25 @@
             content: '';
             display: block;
             background: #8bc4e8;
-            width: 44px;
-            height: 44px;
+            width: calc(var(--icon-inner-size) * 0.55);
+            height: calc(var(--icon-inner-size) * 0.55);
             border-radius: 50%;
             position: absolute;
-            top: 0; left: 18px;
+            top: 0; left: 22%;
         }
         .icon-user:after {
             content: '';
             display: block;
             background: #e7a6f7;
-            width: 70px;
-            height: 30px;
+            width: calc(var(--icon-inner-size) * 0.88);
+            height: calc(var(--icon-inner-size) * 0.38);
             border-radius: 14px 14px 18px 18px;
             position: absolute;
-            bottom: 0; left: 5px;
+            bottom: 6%; left: 6%;
         }
         .icon-folder {
-            width: 80px;
-            height: 80px;
+            width: var(--icon-inner-size);
+            height: var(--icon-inner-size);
             background: none;
             position: relative;
         }
@@ -99,10 +118,10 @@
             content: '';
             display: block;
             position: absolute;
-            left: 12px;
-            top: 32px;
-            width: 56px;
-            height: 36px;
+            left: calc(var(--icon-inner-size) * 0.16);
+            top: calc(var(--icon-inner-size) * 0.42);
+            width: calc(var(--icon-inner-size) * 0.70);
+            height: calc(var(--icon-inner-size) * 0.44);
             background: #8bc4e8;
             border-radius: 8px;
         }
@@ -110,18 +129,18 @@
             content: '';
             display: block;
             position: absolute;
-            left: 12px;
-            top: 20px;
-            width: 32px;
-            height: 14px;
+            left: calc(var(--icon-inner-size) * 0.16);
+            top: calc(var(--icon-inner-size) * 0.24);
+            width: calc(var(--icon-inner-size) * 0.40);
+            height: calc(var(--icon-inner-size) * 0.18);
             background: #e7a6f7;
             border-radius: 6px 6px 1px 1px;
         }
         .btn, .icon-btn-label {
-            padding: 8px 28px;
+            padding: var(--btn-vert-padding) var(--btn-horiz-padding);
             border: none;
             border-radius: 18px;
-            font-size: 1.1em;
+            font-size: var(--btn-font-size);
             font-weight: bold;
             cursor: pointer;
             margin-top: 6px;
@@ -131,10 +150,20 @@
             transition: background 0.3s;
             text-align: center;
             outline: none;
+            white-space: nowrap;
         }
         .icon-btn-label:hover,
         .icon-btn:focus .icon-btn-label {
             background: linear-gradient(120deg, #7fd4ea, #e7abfc);
+        }
+
+        /* Keep layout responsive on very small screens */
+        @media (max-width: 560px) {
+            .container {
+                flex-direction: column;
+                gap: 28px;
+                padding: 20px;
+            }
         }
     </style>
 </head>
