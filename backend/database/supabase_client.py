@@ -1,25 +1,29 @@
-# Module for initializing and managing the connection to Supabase
+"""
+Supabase client configuration and database operations.
+Handles connection to Supabase and provides database interaction methods.
+"""
 
+import os
 from supabase import create_client, Client
 from dotenv import load_dotenv
-import os
 
 # Load environment variables from .env file
 load_dotenv()
 
 # Get Supabase credentials from environment
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 
 # Validate that credentials exist
-if not SUPABASE_URL or not SUPABASE_KEY:
+if not SUPABASE_URL or not SUPABASE_ANON_KEY:
     raise ValueError(
         "Missing Supabase credentials! "
-        "Please set SUPABASE_URL and SUPABASE_KEY in your .env file"
+        "Please set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file"
     )
 
 # Create and export the Supabase client
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 # Optional: Helper function to test connection
 def test_connection():

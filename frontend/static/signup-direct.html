@@ -1,513 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup - Direct Supabase</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo h1 {
-            color: #667eea;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .logo p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        input.invalid {
-            border-color: #e74c3c;
-        }
-
-        input.valid {
-            border-color: #27ae60;
-        }
-
-        .password-requirements {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-            padding-left: 5px;
-        }
-
-        .password-requirements div {
-            margin: 2px 0;
-        }
-
-        .requirement-met {
-            color: #27ae60;
-        }
-
-        .requirement-unmet {
-            color: #e74c3c;
-        }
-
-        .btn-signup {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            margin-top: 20px;
-        }
-
-        .btn-signup:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-signup:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .alert {
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-            font-size: 14px;
-        }
-
-        .alert.show {
-            display: block;
-        }
-
-        .alert-error {
-            background: #fee;
-            color: #c33;
-            border: 1px solid #fcc;
-        }
-
-        .alert-success {
-            background: #efe;
-            color: #3c3;
-            border: 1px solid #cfc;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 0.6s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .debug-info {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #666;
-        }
-
-        .debug-info h4 {
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .debug-info pre {
-            background: #fff;
-            padding: 10px;
-            border-radius: 4px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signup - Security System</title>
+<style>
+body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f4; }
+.container { background: #fff; padding: 40px; border-radius: 10px; width: 100%; max-width: 400px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+.form-group { margin-bottom: 15px; }
+label { display: block; margin-bottom: 5px; font-weight: bold; }
+input { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
+button { width: 100%; padding: 12px; border: none; border-radius: 5px; background: #667eea; color: #fff; font-size: 16px; cursor: pointer; }
+.alert { display: none; margin-bottom: 15px; padding: 10px; border-radius: 5px; }
+.alert.show { display: block; }
+.alert-error { background: #fee; color: #c33; border: 1px solid #fcc; }
+.alert-success { background: #efe; color: #3c3; border: 1px solid #cfc; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <h1>Security System</h1>
-            <p>Create Your Account</p>
+<div class="container">
+    <h2>Create Your Account</h2>
+    <div id="alert" class="alert"></div>
+    <form id="signupForm">
+        <div class="form-group">
+            <label for="username">Username *</label>
+            <input type="text" id="username" name="username" required minlength="3">
         </div>
-
-        <div id="alert" class="alert"></div>
-
-        <form id="signupForm">
-            <div class="form-group">
-                <label for="username">Username * (min 3 characters)</label>
-                <input type="text" id="username" name="username" required minlength="3">
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email *</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-                <label for="firstName">First Name</label>
-                <input type="text" id="firstName" name="firstName">
-            </div>
-
-            <div class="form-group">
-                <label for="lastName">Last Name</label>
-                <input type="text" id="lastName" name="lastName">
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password *</label>
-                <input type="password" id="password" name="password" required>
-                <div class="password-requirements" id="passwordRequirements">
-                    <div id="req-length">✗ At least 8 characters</div>
-                    <div id="req-upper">✗ One uppercase letter</div>
-                    <div id="req-lower">✗ One lowercase letter</div>
-                    <div id="req-number">✗ One number</div>
-                    <div id="req-special">✗ One special character (!@#$%^&*)</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password *</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required>
-            </div>
-
-            <button type="submit" class="btn-signup" id="submitBtn">
-                Create Account
-            </button>
-        </form>
-
-        <div class="debug-info">
-            <h4>Debug Info:</h4>
-            <pre id="debugInfo">Ready to signup...</pre>
+        <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
         </div>
-    </div>
+        <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" name="firstName" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input type="text" id="lastName" name="lastName" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password *</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password *</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+        </div>
+        <button type="submit">Create Account</button>
+    </form>
+    <p style="text-align:center; margin-top:15px;">
+        Already have an account? <a href="/static/login.html">Login</a>
+    </p>
+</div>
 
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://porcvcjxmjwpmhpvqckj.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcmN2Y2p4bWp3cG1ocHZxY2tqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzc4MzYsImV4cCI6MjA3Njg1MzgzNn0.r0CHtaPGHNfCe4SAm4MwBq8vAyyadYEbJhgI1g1LpEU';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    <script>
-        // Supabase configuration
-        const SUPABASE_URL = 'https://porcvcjxmjwpmhpvqckj.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcmN2Y2p4bWp3cG1ocHZxY2tqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzc4MzYsImV4cCI6MjA3Njg1MzgzNn0.r0CHtaPGHNfCe4SAm4MwBq8vAyyadYEbJhgI1g1LpEU';
+function showAlert(message, type) {
+    const alert = document.getElementById('alert');
+    alert.textContent = message;
+    alert.className = `alert alert-${type} show`;
+}
 
-        // Initialize Supabase client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-        const debugInfo = document.getElementById('debugInfo');
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
+    const payload = {
+        username: document.getElementById('username').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        first_name: document.getElementById('firstName').value.trim(),
+        last_name: document.getElementById('lastName').value.trim(),
+        password: document.getElementById('password').value,
+    };
 
-        function updateDebug(message) {
-            const timestamp = new Date().toLocaleTimeString();
-            debugInfo.textContent = `[${timestamp}] ${message}`;
-            console.log(message);
-        }
-
-        // Password validation
-        passwordInput.addEventListener('input', function() {
-            const password = this.value;
-
-            const hasLength = password.length >= 8;
-            const hasUpper = /[A-Z]/.test(password);
-            const hasLower = /[a-z]/.test(password);
-            const hasNumber = /\d/.test(password);
-            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-            updateRequirement('req-length', hasLength);
-            updateRequirement('req-upper', hasUpper);
-            updateRequirement('req-lower', hasLower);
-            updateRequirement('req-number', hasNumber);
-            updateRequirement('req-special', hasSpecial);
-
-            if (hasLength && hasUpper && hasLower && hasNumber && hasSpecial) {
-                this.classList.remove('invalid');
-                this.classList.add('valid');
-            } else if (password.length > 0) {
-                this.classList.remove('valid');
-                this.classList.add('invalid');
-            } else {
-                this.classList.remove('valid', 'invalid');
-            }
+    try {
+        const res = await fetch('http://localhost:5000/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
 
-        function updateRequirement(id, met) {
-            const element = document.getElementById(id);
-            if (met) {
-                element.classList.remove('requirement-unmet');
-                element.classList.add('requirement-met');
-                element.textContent = element.textContent.replace('✗', '✓');
-            } else {
-                element.classList.remove('requirement-met');
-                element.classList.add('requirement-unmet');
-                element.textContent = element.textContent.replace('✓', '✗');
-            }
-        }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Signup failed');
 
-        confirmPasswordInput.addEventListener('input', function() {
-            if (this.value !== passwordInput.value) {
-                this.classList.remove('valid');
-                this.classList.add('invalid');
-            } else {
-                this.classList.remove('invalid');
-                this.classList.add('valid');
-            }
-        });
-
-        function validatePassword(password) {
-            if (password.length < 8) {
-                return { valid: false, message: "Password must be at least 8 characters long" };
-            }
-            if (!/[A-Z]/.test(password)) {
-                return { valid: false, message: "Password must contain at least one uppercase letter" };
-            }
-            if (!/[a-z]/.test(password)) {
-                return { valid: false, message: "Password must contain at least one lowercase letter" };
-            }
-            if (!/\d/.test(password)) {
-                return { valid: false, message: "Password must contain at least one number" };
-            }
-            if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-                return { valid: false, message: "Password must contain at least one special character" };
-            }
-            return { valid: true, message: "Password is valid" };
-        }
-
-        async function signupUser(email, password, username, firstName, lastName) {
-            try {
-                updateDebug('Step 1: Creating auth user in Supabase...');
-
-                // Create user in Supabase Auth
-                const { data: authData, error: authError } = await supabase.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        emailRedirectTo: `${window.location.origin}/api/confirm-email`,
-                        data: {
-                            username: username
-                        }
-                    }
-                });
-
-                if (authError) {
-                    updateDebug(`Auth error: ${authError.message}`);
-                    throw authError;
-                }
-
-                if (!authData.user) {
-                    throw new Error('User creation failed - no user returned');
-                }
-
-                const userId = authData.user.id;
-                updateDebug(`Step 2: Auth user created! User ID: ${userId}`);
-
-                // Wait a moment for the auth user to be fully created
-                await new Promise(resolve => setTimeout(resolve, 1000));
-
-                updateDebug('Step 3: Creating profile in profiles table...');
-
-                // Create profile - using service role pattern or letting trigger handle it
-                const profilePayload = {
-                    user_id: userId,
-                    username: username,
-                    first_name: firstName || null,
-                    last_name: lastName || null,
-                    is_locked: false
-                };
-
-                updateDebug(`Profile payload: ${JSON.stringify(profilePayload)}`);
-
-                const { data: profileData, error: profileError } = await supabase
-                    .from('profiles')
-                    .insert(profilePayload)
-                    .select();
-
-                if (profileError) {
-                    console.error('Profile creation error:', profileError);
-                    updateDebug(`Profile error: ${profileError.message}`);
-
-                    // If profile creation fails, that's ok - might be handled by trigger
-                    // or RLS policy issue, but auth user is created
-                    return {
-                        success: true,
-                        user_id: userId,
-                        email: email,
-                        username: username,
-                        needs_confirmation: authData.user.email_confirmed_at === null,
-                        profile_created: false,
-                        warning: 'Auth user created but profile creation had issues. This might be handled automatically.'
-                    };
-                }
-
-                updateDebug('Step 4: Profile created successfully!');
-
-                return {
-                    success: true,
-                    user_id: userId,
-                    email: email,
-                    username: username,
-                    profile: profileData?.[0],
-                    needs_confirmation: authData.user.email_confirmed_at === null,
-                    profile_created: true
-                };
-
-            } catch (error) {
-                console.error('Sign-up error:', error);
-                updateDebug(`ERROR: ${error.message}`);
-                throw error;
-            }
-        }
-
-        document.getElementById('signupForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            updateDebug('Form submitted...');
-
-            const alert = document.getElementById('alert');
-            alert.classList.remove('show', 'alert-error', 'alert-success');
-
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const firstName = document.getElementById('firstName').value.trim();
-            const lastName = document.getElementById('lastName').value.trim();
-
-            if (username.length < 3) {
-                showAlert('Username must be at least 3 characters long', 'error');
-                updateDebug('Error: Username too short');
-                return;
-            }
-
-            const passwordValidation = validatePassword(password);
-            if (!passwordValidation.valid) {
-                showAlert(passwordValidation.message, 'error');
-                updateDebug(`Error: ${passwordValidation.message}`);
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showAlert('Passwords do not match', 'error');
-                updateDebug('Error: Passwords do not match');
-                return;
-            }
-
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="loading"></span>Creating Account...';
-
-            try {
-                updateDebug(`Starting signup for: ${email}`);
-                const result = await signupUser(email, password, username, firstName, lastName);
-
-                if (result.success) {
-                    let message = `Success! Account created for ${result.email}.`;
-
-                    if (result.needs_confirmation) {
-                        message += ' Please check your email for confirmation link.';
-                    }
-
-                    if (result.warning) {
-                        message += ` Note: ${result.warning}`;
-                    }
-
-                    showAlert(message, 'success');
-                    updateDebug(`SUCCESS!\nUser ID: ${result.user_id}\nUsername: ${result.username}\nEmail: ${result.email}\nProfile Created: ${result.profile_created}`);
-
-                    document.getElementById('signupForm').reset();
-
-                    document.querySelectorAll('.password-requirements div').forEach(el => {
-                        el.classList.remove('requirement-met');
-                        el.classList.add('requirement-unmet');
-                        el.textContent = el.textContent.replace('✓', '✗');
-                    });
-                }
-            } catch (error) {
-                let errorMessage = error.message;
-
-                if (errorMessage.includes('already registered') || errorMessage.includes('already been registered')) {
-                    errorMessage = 'This email is already registered';
-                } else if (errorMessage.includes('User already registered')) {
-                    errorMessage = 'This email is already registered';
-                }
-
-                showAlert(`Error: ${errorMessage}`, 'error');
-                updateDebug(`ERROR: ${errorMessage}`);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Create Account';
-            }
-        });
-
-        function showAlert(message, type) {
-            const alert = document.getElementById('alert');
-            alert.textContent = message;
-            alert.className = `alert alert-${type} show`;
-        }
-
-        updateDebug('Ready! Using table: profiles\n\nPassword requirements:\n- 8+ characters\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character');
-    </script>
+        alert('Signup successful! Check your email.');
+        document.getElementById('signupForm').reset();
+    } catch (err) {
+        alert(err.message);
+        console.error(err);
+    }
+});
+</script>
 </body>
 </html>

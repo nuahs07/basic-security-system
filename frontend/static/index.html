@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Security System</title>
+<style>
+body { font-family: sans-serif; padding: 20px; }
+</style>
+</head>
+<body>
+<h1>Welcome to the Dashboard</h1>
+<p id="userInfo"></p>
+<button id="logoutBtn">Logout</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://porcvcjxmjwpmhpvqckj.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcmN2Y2p4bWp3cG1ocHZxY2tqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzc4MzYsImV4cCI6MjA3Njg1MzgzNn0.r0CHtaPGHNfCe4SAm4MwBq8vAyyadYEbJhgI1g1LpEU';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function loadUser() {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (!session) {
+        window.location.href = '/static/login.html';
+        return;
+    }
+    const { user } = session;
+    document.getElementById('userInfo').textContent = 
+        `Logged in as: ${user.user_metadata.username} (${user.email})`;
+}
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/static/login.html';
+});
+
+loadUser();
+</script>
+</body>
+</html>
