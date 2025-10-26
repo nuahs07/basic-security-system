@@ -1,7 +1,4 @@
-"""
-Supabase client configuration and database operations.
-Handles connection to Supabase and provides database interaction methods.
-"""
+
 
 import os
 from supabase import create_client, Client
