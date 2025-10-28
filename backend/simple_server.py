@@ -54,15 +54,19 @@ def signup():
             
             # Step 2: Create profile
             profile_data = {
-                "user_id": user_id,
+                #"user_id": user_id,
                 "username": username,
                 "first_name": first_name,
                 "last_name": last_name,
                 "is_locked": False
             }
             
-            profile_result = supabase.table("profiles").insert(profile_data).execute()
-            print(f"Profile created: {profile_result.data}")
+            profile_result = supabase.table("profiles") \
+                                     .update(profile_data) \
+                                     .eq("user_id", user_id) \
+                                     .execute()
+            
+            print(f"Profile updated: {profile_result.data}")
             
             # Step 3: Create initial user data
             user_data = {
