@@ -38,15 +38,8 @@ body {
 .logo h1 {
   color: #fff;
   font-family: Jomhuria;
-  font-size: 100px;
-  font-style: normal;
-  font-weight: 130px;
-  line-height: normal;
-}
-
-.logo p {
-  color: #666;
-  font-size: 14px;
+  font-size: 80px;
+  font-weight: 90px;
 }
 
 .form-group {
