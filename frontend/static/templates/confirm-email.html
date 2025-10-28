@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Email Confirmed</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #f4f4f4;
+      }
+      .container {
+        background: #fff;
+        padding: 40px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      }
+      .success {
+        color: green;
+        font-size: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="success">Email confirmed successfully!</div>
+      <p>You can now <a href="/static/login.html">login</a>.</p>
+    </div>
+
+    <script>
+      setTimeout(() => {
+        window.location.href = "/static/login.html";
+      }, 3000);
+    </script>
+  </body>
+</html>

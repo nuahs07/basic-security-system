@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import re
 import os
@@ -21,8 +21,10 @@ supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)          # For auth/si
 app = Flask(
     __name__,
     static_folder="../../frontend/static",
-    static_url_path="/static"
+    static_url_path="/static",
+    template_folder="../../frontend/static/templates"
 )
+
 CORS(app)
 
 FRONTEND_URL = "http://localhost:5000"
@@ -124,11 +126,12 @@ def signup():
 # --- Serve Pages ---
 @app.route("/signup")
 def serve_signup():
-    return app.send_static_file("signup-direct.html")
+    return render_template("signup-direct.html")
+
 
 @app.route("/confirm-email")
 def serve_confirm_email():
-    return app.send_static_file("confirm-email.html")
+    return render_template("confirm-email.html")
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
