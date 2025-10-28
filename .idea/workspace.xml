@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="509255c0-ebb1-46a8-9225-5b57df6d16df" name="Changes" comment="backend is connected to supabase">
+      <change beforePath="$PROJECT_DIR$/.idea/basic-security-system.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/basic-security-system.iml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "AMBG0215"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/nuahs07/basic-security-system.git",
+    "accountId": "64dcf773-293e-4885-a6cf-45b858dd0ebc"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="34YtKJcGccMi7Thgo67km4F8MA9" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "signup-page",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/SCHOOL/CODES/basic-security-system",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ADMIN\Desktop\PROJECT\basic-security-system\frontend\static" />
+      <recent name="C:\Users\ADMIN\Desktop\PROJECT\basic-security-system\backend\signup" />
+      <recent name="C:\Users\ADMIN\Desktop\PROJECT\basic-security-system\backend" />
+      <recent name="C:\Users\ADMIN\Desktop\PROJECT\basic-security-system\backend\database" />
+    </key>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="509255c0-ebb1-46a8-9225-5b57df6d16df" name="Changes" comment="" />
+      <created>1761402276307</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761402276307</updated>
+    </task>
+    <task id="LOCAL-00001" summary="backend is connected to supabase">
+      <option name="closed" value="true" />
+      <created>1761419636745</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1761419636745</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="backend is connected to supabase" />
+    <option name="LAST_COMMIT_MESSAGE" value="backend is connected to supabase" />
+  </component>
+</project>
