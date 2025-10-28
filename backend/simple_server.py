@@ -7,6 +7,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 from supabase import create_client, Client
+from datetime import datetime, timedelta
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -18,6 +19,9 @@ SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+MAX_FAILED_ATTEMPTS = 5
+LOCKOUT_DURATION_MINUTES = 10
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
@@ -93,6 +97,114 @@ def signup():
     except Exception as e:
         print(f"Sign-up error: {e}")
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/api/login', methods=['POST'])
+def login():
+    """Handle user login with custom security checks"""
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+
+        if not all([email, password]):
+            return jsonify({'error': 'Email and password are required'}), 400
+
+        # --- 1. SECURITY CORE: Check for existing lock ---
+        # Get the user's profile to see if they are locked
+        profile_res = supabase.table("profiles").select("user_id", "is_locked").eq("email", email).execute() # Note: You'd first get the user_id from auth.users, but this is a shortcut.
+        
+        if profile_res.data:
+            user_id = profile_res.data[0]['user_id']
+            
+            # Check if user is locked
+            lock_res = supabase.table("account_locks") \
+                             .select("unlock_at") \
+                             .eq("user_id", user_id) \
+                             .order("locked_at", desc=True) \
+                             .limit(1) \
+                             .execute()
+                             
+            if lock_res.data:
+                unlock_at = datetime.fromisoformat(lock_res.data[0]['unlock_at'])
+                if datetime.now(unlock_at.tzinfo) < unlock_at:
+                    # User is still locked out
+                    remaining = unlock_at - datetime.now(unlock_at.tzinfo)
+                    return jsonify({
+                        'error': 'account_locked',
+                        'message': f'Account locked. Try again in {remaining.seconds // 60} minutes.'
+                    }), 429 # Too Many Requests
+
+        # --- 2. ATTEMPT LOGIN ---
+        try:
+            # If not locked, try to sign in
+            session_response = supabase.auth.sign_in_with_password({
+                "email": email,
+                "password": password
+            })
+
+            # --- 3. LOG SUCCESSFUL ATTEMPT ---
+            if session_response.session:
+                user_id = session_response.user.id
+                supabase.table("login_attempts").insert({
+                    "user_id": user_id,
+                    "username": email,
+                    "success": True,
+                    "failure_reason": None
+                }).execute()
+                
+                # Unlock the account on success
+                supabase.table("profiles").update({"is_locked": False}).eq("user_id", user_id).execute()
+
+                return jsonify({
+                    'success': True,
+                    'message': 'Login successful!',
+                    'access_token': session_response.session.access_token
+                }), 200
+
+        except Exception as auth_error:
+            # --- 4. LOG FAILED ATTEMPT & CHECK FOR LOCK ---
+            # This is where the 5-attempt logic happens
+            user_id = profile_res.data[0]['user_id'] if profile_res.data else None
+            
+            supabase.table("login_attempts").insert({
+                "user_id": user_id,
+                "username": email,
+                "success": False,
+                "failure_reason": "Invalid password"
+            }).execute()
+
+            if user_id:
+                # Count recent failures
+                failures = supabase.table("login_attempts") \
+                                 .select("attempt_id", count='exact') \
+                                 .eq("user_id", user_id) \
+                                 .eq("success", False) \
+                                 .order("timestamp", desc=True) \
+                                 .limit(MAX_FAILED_ATTEMPTS) \
+                                 .execute()
+                
+                if failures.count >= MAX_FAILED_ATTEMPTS:
+                    # --- TRIGGER LOCK ---
+                    unlock_time = datetime.now() + timedelta(minutes=LOCKOUT_DURATION_MINUTES)
+                    supabase.table("account_locks").insert({
+                        "user_id": user_id,
+                        "username": email,
+                        "unlock_at": unlock_time.isoformat(),
+                        "failed_attempts_count": failures.count
+                    }).execute()
+                    # Mark profile as locked
+                    supabase.table("profiles").update({"is_locked": True}).eq("user_id", user_id).execute()
+                    
+                    return jsonify({
+                        'error': 'account_locked',
+                        'message': f'Account locked for {LOCKOUT_DURATION_MINUTES} minutes.'
+                    }), 429
+
+            return jsonify({'error': 'Invalid email or password'}), 401 # Unauthorized
+
+    except Exception as e:
+        print(f"Login error: {e}")
+        return jsonify({'error': 'An internal server error occurred'}), 500
 
 @app.route('/api/health', methods=['GET'])
 def health():

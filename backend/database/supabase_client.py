@@ -1,5 +1,3 @@
-
-
 import os
 from supabase import create_client, Client
 from dotenv import load_dotenv
@@ -26,8 +24,9 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 def test_connection():
     """Test if Supabase connection is working"""
     try:
-        # Try to query the users table
-        result = supabase.table('users').select('user_id').limit(1).execute()
+        # Try to query the profiles table
+        # --- FIX: Changed 'users' to 'profiles' ---
+        result = supabase.table('profiles').select('user_id').limit(1).execute()
         print("Supabase connection successful!")
         return True
     except Exception as e:
@@ -38,7 +37,8 @@ def test_connection():
 def get_user_by_username(username: str):
     """Get user by username"""
     try:
-        result = supabase.table('users').select('*').eq('username', username).execute()
+        # --- FIX: Changed 'users' to 'profiles' ---
+        result = supabase.table('profiles').select('*').eq('username', username).execute()
         return result.data[0] if result.data else None
     except Exception as e:
         print(f"Error fetching user: {e}")
@@ -47,7 +47,8 @@ def get_user_by_username(username: str):
 def get_user_by_email(email: str):
     """Get user by email"""
     try:
-        result = supabase.table('users').select('*').eq('email', email).execute()
+        # --- FIX: Changed 'users' to 'profiles' ---
+        result = supabase.table('profiles').select('*').eq('email', email).execute()
         return result.data[0] if result.data else None
     except Exception as e:
         print(f"Error fetching user: {e}")
@@ -56,7 +57,8 @@ def get_user_by_email(email: str):
 def get_user_by_id(user_id: int):
     """Get user by ID"""
     try:
-        result = supabase.table('users').select('*').eq('user_id', user_id).execute()
+        # --- FIX: Changed 'users' to 'profiles' ---
+        result = supabase.table('profiles').select('*').eq('user_id', user_id).execute()
         return result.data[0] if result.data else None
     except Exception as e:
         print(f"Error fetching user: {e}")
