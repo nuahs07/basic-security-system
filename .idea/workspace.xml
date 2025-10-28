@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="509255c0-ebb1-46a8-9225-5b57df6d16df" name="Changes" comment="backend is connected to supabase">
-      <change afterPath="$PROJECT_DIR$/.idea/basic-security-system.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/signup/signup.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/signup/signup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/simple_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/simple_server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/signup-direct.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/static/signup-direct.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/basic-security-system.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/basic-security-system.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +23,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "AMBG0215"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/nuahs07/basic-security-system.git",
+    "accountId": "64dcf773-293e-4885-a6cf-45b858dd0ebc"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -44,6 +52,8 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "signup-page",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/SCHOOL/CODES/basic-security-system",
     "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
@@ -54,13 +64,6 @@
       <recent name="C:\Users\ADMIN\Desktop\PROJECT\basic-security-system\backend" />
       <recent name="C:\Users\ADMIN\Desktop\PROJECT\basic-security-system\backend\database" />
     </key>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-python-sdk-4e2b1448bda8-9a97661f3031-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.27397.106" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
