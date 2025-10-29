@@ -21,28 +21,48 @@
       const SUPABASE_URL = "https://porcvcjxmjwpmhpvqckj.supabase.co";
       const SUPABASE_ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcmN2Y2p4bWp3cG1ocHZxY2tqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzc4MzYsImV4cCI6MjA3Njg1MzgzNn0.r0CHtaPGHNfCe4SAm4MwBq8vAyyadYEbJhgI1g1LpEU";
-      const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+      });
 
       async function loadUser() {
-        const {
-          data: { session },
-          error,
-        } = await supabase.auth.getSession();
+        // Try to get session immediately
+        let { data: { session } } = await supabase.auth.getSession();
+
+        // If not available yet, wait for auth state change or retry briefly
         if (!session) {
-          window.location.href = "/static/login.html";
+          const waitForSession = new Promise((resolve) => {
+            const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+              if (newSession) {
+                sub.subscription.unsubscribe();
+                resolve(newSession);
+              }
+            });
+            // Fallback timeout
+            setTimeout(async () => {
+              sub.subscription.unsubscribe();
+              const r = await supabase.auth.getSession();
+              resolve(r.data.session || null);
+            }, 600);
+          });
+          session = await waitForSession;
+        }
+
+        if (!session) {
+          window.location.href = "/";
           return;
         }
+
         const { user } = session;
-        document.getElementById(
-          "userInfo"
-        ).textContent = `Logged in as: ${user.user_metadata.username} (${user.email})`;
+        const username = user.user_metadata?.username || user.email?.split('@')[0] || 'User';
+        document.getElementById("userInfo").textContent = `Logged in as: ${username} (${user.email})`;
       }
 
       document
         .getElementById("logoutBtn")
         .addEventListener("click", async () => {
           await supabase.auth.signOut();
-          window.location.href = "/static/login.html";
+          window.location.href = "/";
         });
 
       loadUser();

@@ -53,6 +53,21 @@ def serve_root():
     """Serves the login page as the root."""
     return render_template('login.html') # Serve login.html from templates
 
+@app.route('/signup')
+def serve_signup():
+    """Serves the signup page."""
+    return render_template('signup-direct.html')
+
+@app.route('/index.html')
+def serve_index():
+    """Serves the dashboard/homepage."""
+    return render_template('index.html')
+
+@app.route('/homepage')
+def serve_homepage():
+    """Serves the homepage with account and file access."""
+    return render_template('homepage.html')
+
 # --- API Endpoints ---
 
 @app.route('/api/signup', methods=['POST'])
@@ -320,6 +335,12 @@ def handle_email_confirm():
     """Serves the confirmation success page."""
     # This route just serves the HTML page. Supabase handles the actual token verification.
     print("Serving confirm-email.html")
+    return render_template('confirm-email.html')
+
+@app.route('/api/confirm-email') 
+def handle_api_email_confirm():
+    """Serves the confirmation success page for API redirects."""
+    print("Serving confirm-email.html via API route")
     return render_template('confirm-email.html')
 
 @app.route('/api/health', methods=['GET'])
