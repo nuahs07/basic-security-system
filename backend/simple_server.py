@@ -3,14 +3,19 @@ Simple Flask server for sign-up testing.
 Run this to serve the API endpoints your frontend needs.
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import os
 from supabase import create_client, Client
 from datetime import datetime, timedelta
 
 # Initialize Flask app
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_folder='../frontend/static', # Path to the 'static' folder
+    static_url_path='/static',         # URL path to access static files
+    template_folder="../frontend/static/templates" # Path to templates
+)
 CORS(app)  # Enable CORS for frontend
 
 # Supabase configuration
@@ -22,6 +27,11 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 MAX_FAILED_ATTEMPTS = 5
 LOCKOUT_DURATION_MINUTES = 10
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    """Serves static files from the frontend/static directory."""
+    return send_from_directory(app.static_folder, filename)
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
@@ -205,6 +215,12 @@ def login():
     except Exception as e:
         print(f"Login error: {e}")
         return jsonify({'error': 'An internal server error occurred'}), 500
+
+@app.route('/confirm-email') # Route Supabase redirects to
+def handle_email_confirm():
+    """Serves the confirmation success page."""
+    # You could add logic here later to check the URL fragment for errors
+    return render_template('confirm-email.html')
 
 @app.route('/api/health', methods=['GET'])
 def health():
