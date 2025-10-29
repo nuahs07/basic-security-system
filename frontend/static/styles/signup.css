@@ -121,6 +121,38 @@ input:focus {
   transform: none;
 }
 
+.mamamo {
+  margin-top: 12px;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.accounting {
+  color: #fff;
+  font-family: Jomhuria;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding-left: 20px;
+}
+
+.loggingin {
+  border-radius: 20px;
+  border: 3px solid #fff;
+  background: linear-gradient(90deg, #83daf2 0%, #f597cf 100%);
+  height: fit-content;
+  color: #fff;
+  font-family: Jomhuria;
+  font-size: 35px;
+  font-style: normal;
+  font-weight: 400;
+  width: max-content;
+  padding: 8px 20px;
+}
+
 .alert {
   padding: 12px 15px;
   border-radius: 8px;
