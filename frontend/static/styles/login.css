@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   background: linear-gradient(
     270deg,
@@ -10,6 +16,7 @@ body {
   justify-content: center;
   align-items: center;
 }
+
 .container {
   border-radius: 30px;
   border: 8px solid #fff;
@@ -18,22 +25,92 @@ body {
   padding: 40px;
   width: 100%;
   max-width: 450px;
+  height: fit-content;
 }
+
+.title {
+  text-align: center;
+  color: #fff;
+  font-family: Jomhuria;
+  font-size: 60px;
+  margin-bottom: 20px;
+  font-weight: normal;
+  margin-top: 0px;
+}
+
+#username,
+#password,
+#email {
+  width: 100%;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.7);
+  height: fit-content;
+  color: #000000;
+  font-family: Jomhuria;
+  font-size: 35px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+#username::placeholder,
+#password::placeholder,
+#email::placeholder {
+  color: #a4a2a2;
+  font-family: Jomhuria;
+  font-size: 35px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
 input {
   display: block;
   margin: 10px auto;
   padding: 10px;
   width: 80%;
   border-radius: 5px;
+  border-color: transparent;
+  font-family: Jomhuria;
+  font-size: 35px;
+  font-style: normal;
+  font-weight: 400;
 }
-button {
-  padding: 10px 20px;
-  border: none;
-  background: #667eea;
+
+input:focus {
+  outline: none;
+  border-color: rgba(245, 151, 207, 1);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.loginbutton {
+  width: 40%;
+  padding: 5px;
+  background: linear-gradient(270deg, #83daf2 0%, #f597cf 100%);
   color: white;
-  border-radius: 5px;
+  border-color: white;
+  border-width: 3px;
+  border-radius: 30px;
+  font-size: 40px;
   cursor: pointer;
+  transition: transform 0.2s ease;
+  margin: 20px auto 0;
+  height: fit-content;
+  font-family: Jomhuria;
+  display: block;
 }
+
+.loginbutton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.loginbutton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 #message {
   margin-top: 15px;
   font-weight: bold;

@@ -17,6 +17,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 20px;
+  overflow-x: hidden;
 }
 
 .container {
@@ -38,7 +39,7 @@ body {
   color: #fff;
   font-family: Jomhuria;
   font-size: 80px;
-  font-weight: 90px;
+  font-weight: normal;
 }
 
 .form-group {
@@ -46,7 +47,6 @@ body {
 }
 
 #username,
-#password,
 #email,
 #firstName,
 #lastName,
@@ -69,7 +69,6 @@ body {
 #email::placeholder,
 #firstName::placeholder,
 #lastName::placeholder,
-#password::placeholder,
 #confirmPassword::placeholder {
   color: #a4a2a2;
   font-family: Jomhuria;
