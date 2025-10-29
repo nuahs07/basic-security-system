@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - Security System</title>
+    <title>Basic Security System</title>
     <style>
       body {
         font-family: sans-serif;
@@ -12,9 +12,12 @@
     </style>
   </head>
   <body>
-    <h1>Welcome to the Dashboard</h1>
-    <p id="userInfo"></p>
-    <button id="logoutBtn">Logout</button>
+    <h1>Welcome to your Account Information!</h1>
+    <button id="logoutBtn" style="margin-bottom: 20px;">Logout</button>
+    <div id="accountInfo" style="margin-top:16px; padding:12px; border:1px solid #ddd; border-radius:8px;">
+      <h3>Your Account Information</h3>
+      <div id="accountContent">Loading...</div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -26,7 +29,6 @@
       });
 
       async function loadUser() {
-        // Try to get session immediately
         let { data: { session } } = await supabase.auth.getSession();
 
         // If not available yet, wait for auth state change or retry briefly
@@ -53,17 +55,56 @@
           return;
         }
 
-        const { user } = session;
-        const username = user.user_metadata?.username || user.email?.split('@')[0] || 'User';
-        document.getElementById("userInfo").textContent = `Logged in as: ${username} (${user.email})`;
+        // Load account information automatically
+        await showAccountInfo();
       }
 
-      document
-        .getElementById("logoutBtn")
-        .addEventListener("click", async () => {
-          await supabase.auth.signOut();
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await supabase.auth.signOut();
+        window.location.href = "/";
+      });
+
+      // Fetch profile from Supabase and show it
+      async function showAccountInfo() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
           window.location.href = "/";
-        });
+          return;
+        }
+
+        const user = session.user;
+        const accountContent = document.getElementById("accountContent");
+        accountContent.textContent = "Loading...";
+
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('username, first_name, last_name, is_locked')
+            .eq('user_id', user.id)
+            .single();
+
+          if (error) {
+            accountContent.textContent = `Failed to load profile: ${error.message}`;
+            return;
+          }
+
+          const username = data?.username || user.user_metadata?.username || user.email?.split('@')[0] || 'N/A';
+          const firstName = data?.first_name || 'N/A';
+          const lastName = data?.last_name || 'N/A';
+          const email = user.email || 'N/A';
+          const locked = data?.is_locked ? 'Yes' : 'No';
+
+          accountContent.innerHTML = `
+            <p><strong>Username:</strong> ${username}</p>
+            <p><strong>First name:</strong> ${firstName}</p>
+            <p><strong>Last name:</strong> ${lastName}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Account locked:</strong> ${locked}</p>
+          `;
+        } catch (e) {
+          accountContent.textContent = `Unexpected error: ${e.message}`;
+        }
+      }
 
       loadUser();
     </script>
