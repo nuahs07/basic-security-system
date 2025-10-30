@@ -150,6 +150,7 @@ input:focus {
   font-weight: 400;
   width: max-content;
   padding: 8px 20px;
+  text-decoration: none;
 }
 
 .alert {

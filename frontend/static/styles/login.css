@@ -22,7 +22,7 @@ body {
   border: 8px solid #fff;
   background: linear-gradient(270deg, #f597cf 0%, #83daf2 100%);
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-  padding: 40px;
+  padding: 20px;
   width: 100%;
   max-width: 450px;
   height: fit-content;
@@ -109,6 +109,46 @@ input:focus {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+}
+
+.footer {
+  height: fit-content;
+  width: fit-content;
+  margin-top: 20px;
+  border-radius: 30px;
+  padding: 5px 15px;
+  align-items: center;
+}
+
+.tgt {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  width: 100%;
+  height: fit-content;
+  gap: 9px;
+}
+
+.regis {
+  text-align: center;
+  font-family: Jomhuria, sans-serif;
+  font-size: 30px;
+  color: #fff;
+  margin-top: 10px;
+}
+
+.registerbutton {
+  border-radius: 20px;
+  border: 2px solid #fff;
+  background: linear-gradient(90deg, #83daf2 0%, #f597cf 100%);
+  color: #fff;
+  font-family: Jomhuria;
+  font-size: 45px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  width: fit-content;
+  padding: 0 20px;
 }
 
 #message {
