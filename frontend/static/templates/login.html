@@ -16,7 +16,6 @@
     />
 
     <title>Login - Security System</title>
-
   </head>
   <body>
     <div class="container">
@@ -24,7 +23,9 @@
       <form id="loginForm">
         <input type="email" id="email" placeholder="Email" required />
         <input type="password" id="password" placeholder="Password" required />
-        <button class="loginbutton" type="submit" id="loginButton">Login</button>
+        <button class="loginbutton" type="submit" id="loginButton">
+          Login
+        </button>
       </form>
       <div id="message"></div>
       <div
@@ -122,8 +123,8 @@
               data: { session },
             } = await supabase.auth.getSession();
             if (session) {
-              // Session is properly set, redirect to dashboard
-              window.location.href = "/index.html";
+              // Session is properly set, redirect to homepage
+              window.location.href = "/homepage";
             } else {
               messageDiv.textContent =
                 "Session not set properly. Please try again.";

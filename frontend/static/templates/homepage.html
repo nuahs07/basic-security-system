@@ -1,228 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Homepage</title>
     <style>
-        :root{
-            /* Keep original sizes as minimum, scale up with viewport */
-            --icon-bg-size: clamp(170px, 14vw, 300px); /* min 170px */
-            --icon-inner-pct: 0.47; /* ~80/170 */
-            --icon-inner-size: calc(var(--icon-bg-size) * var(--icon-inner-pct));
-            --icon-radius: calc(var(--icon-bg-size) * 0.188); /* ~32px @170px */
-            --btn-font-size: clamp(1.1em, calc(var(--icon-bg-size) * 0.08), 1.3em);
-            --btn-vert-padding: clamp(8px, calc(var(--icon-bg-size) * 0.03), 16px);
-            --btn-horiz-padding: clamp(28px, calc(var(--icon-bg-size) * 0.12), 40px);
-            --container-padding: clamp(20px, 3vw, 80px);
-            --container-gap: clamp(60px, 8vw, 140px); /* spacing between buttons and to edges */
-        }
+      :root {
+        /* Keep original sizes as minimum, scale up with viewport */
+        --icon-bg-size: clamp(170px, 14vw, 300px); /* min 170px */
+        --icon-inner-pct: 0.47; /* ~80/170 */
+        --icon-inner-size: calc(var(--icon-bg-size) * var(--icon-inner-pct));
+        --icon-radius: calc(var(--icon-bg-size) * 0.188); /* ~32px @170px */
+        --btn-font-size: clamp(1.1em, calc(var(--icon-bg-size) * 0.08), 1.3em);
+        --btn-vert-padding: clamp(8px, calc(var(--icon-bg-size) * 0.03), 16px);
+        --btn-horiz-padding: clamp(
+          28px,
+          calc(var(--icon-bg-size) * 0.12),
+          40px
+        );
+        --container-padding: clamp(20px, 3vw, 80px);
+        --container-gap: clamp(
+          60px,
+          8vw,
+          140px
+        ); /* spacing between buttons and to edges */
+      }
 
-        html, body {
-            height: 100%;
-        }
+      html,
+      body {
+        height: 100%;
+      }
 
-        body {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(120deg, #e7a6f7, #8caeed, #78e9dc);
-            position: relative;
-            overflow: hidden;
-        }
-        .bubble-bg {
-            position: absolute;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(120deg, #e7a6f7, #8caeed, #78e9dc);
+        position: relative;
+        overflow: hidden;
+      }
+      .bubble-bg {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+      }
+      .container {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 0 var(--container-padding);
+        gap: var(--container-gap);
+        box-sizing: border-box;
+      }
+      .icon-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0; /* spacing handled by container gap & padding */
+      }
+      .icon-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: none;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: box-shadow 0.2s;
+      }
+      .icon-btn:focus,
+      .icon-btn:hover {
+        box-shadow: 0 0 0 4px #8caeed55;
+      }
+      .icon-bg {
+        width: var(--icon-bg-size);
+        height: var(--icon-bg-size);
+        border-radius: var(--icon-radius);
+        background: linear-gradient(120deg, #eed1fdbb, #daffff99);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        box-shadow: 0 2px 24px 0 rgba(160, 0, 174, 0.07);
+      }
+      .icon-user {
+        width: var(--icon-inner-size);
+        height: var(--icon-inner-size);
+        background: none;
+        border-radius: 50%;
+        position: relative;
+      }
+      .icon-user:before {
+        content: "";
+        display: block;
+        background: #8bc4e8;
+        width: calc(var(--icon-inner-size) * 0.55);
+        height: calc(var(--icon-inner-size) * 0.55);
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        left: 22%;
+      }
+      .icon-user:after {
+        content: "";
+        display: block;
+        background: #e7a6f7;
+        width: calc(var(--icon-inner-size) * 0.88);
+        height: calc(var(--icon-inner-size) * 0.38);
+        border-radius: 14px 14px 18px 18px;
+        position: absolute;
+        bottom: 6%;
+        left: 6%;
+      }
+      .icon-folder {
+        width: var(--icon-inner-size);
+        height: var(--icon-inner-size);
+        background: none;
+        position: relative;
+      }
+      .icon-folder:before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: calc(var(--icon-inner-size) * 0.16);
+        top: calc(var(--icon-inner-size) * 0.42);
+        width: calc(var(--icon-inner-size) * 0.7);
+        height: calc(var(--icon-inner-size) * 0.44);
+        background: #8bc4e8;
+        border-radius: 8px;
+      }
+      .icon-folder:after {
+        content: "";
+        display: block;
+        position: absolute;
+        left: calc(var(--icon-inner-size) * 0.16);
+        top: calc(var(--icon-inner-size) * 0.24);
+        width: calc(var(--icon-inner-size) * 0.4);
+        height: calc(var(--icon-inner-size) * 0.18);
+        background: #e7a6f7;
+        border-radius: 6px 6px 1px 1px;
+      }
+      .btn,
+      .icon-btn-label {
+        padding: var(--btn-vert-padding) var(--btn-horiz-padding);
+        border: none;
+        border-radius: 18px;
+        font-size: var(--btn-font-size);
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 6px;
+        background: linear-gradient(120deg, #aeb8ff, #e7a6f7);
+        color: white;
+        box-shadow: 0 2px 12px 0 rgba(160, 0, 174, 0.07);
+        transition: background 0.3s;
+        text-align: center;
+        outline: none;
+        white-space: nowrap;
+      }
+      .icon-btn-label:hover,
+      .icon-btn:focus .icon-btn-label {
+        background: linear-gradient(120deg, #7fd4ea, #e7abfc);
+      }
+
+      /* Keep layout responsive on very small screens */
+      @media (max-width: 560px) {
         .container {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 0 var(--container-padding);
-            gap: var(--container-gap);
-            box-sizing: border-box;
+          flex-direction: column;
+          gap: 28px;
+          padding: 20px;
         }
-        .icon-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0; /* spacing handled by container gap & padding */
-        }
-        .icon-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: none;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            transition: box-shadow 0.2s;
-        }
-        .icon-btn:focus,
-        .icon-btn:hover {
-            box-shadow: 0 0 0 4px #8caeed55;
-        }
-        .icon-bg {
-            width: var(--icon-bg-size);
-            height: var(--icon-bg-size);
-            border-radius: var(--icon-radius);
-            background: linear-gradient(120deg, #eed1fdbb, #daffff99);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 14px;
-            box-shadow: 0 2px 24px 0 rgba(160,0,174,0.07);
-        }
-        .icon-user {
-            width: var(--icon-inner-size);
-            height: var(--icon-inner-size);
-            background: none;
-            border-radius: 50%;
-            position: relative;
-        }
-        .icon-user:before {
-            content: '';
-            display: block;
-            background: #8bc4e8;
-            width: calc(var(--icon-inner-size) * 0.55);
-            height: calc(var(--icon-inner-size) * 0.55);
-            border-radius: 50%;
-            position: absolute;
-            top: 0; left: 22%;
-        }
-        .icon-user:after {
-            content: '';
-            display: block;
-            background: #e7a6f7;
-            width: calc(var(--icon-inner-size) * 0.88);
-            height: calc(var(--icon-inner-size) * 0.38);
-            border-radius: 14px 14px 18px 18px;
-            position: absolute;
-            bottom: 6%; left: 6%;
-        }
-        .icon-folder {
-            width: var(--icon-inner-size);
-            height: var(--icon-inner-size);
-            background: none;
-            position: relative;
-        }
-        .icon-folder:before {
-            content: '';
-            display: block;
-            position: absolute;
-            left: calc(var(--icon-inner-size) * 0.16);
-            top: calc(var(--icon-inner-size) * 0.42);
-            width: calc(var(--icon-inner-size) * 0.70);
-            height: calc(var(--icon-inner-size) * 0.44);
-            background: #8bc4e8;
-            border-radius: 8px;
-        }
-        .icon-folder:after {
-            content: '';
-            display: block;
-            position: absolute;
-            left: calc(var(--icon-inner-size) * 0.16);
-            top: calc(var(--icon-inner-size) * 0.24);
-            width: calc(var(--icon-inner-size) * 0.40);
-            height: calc(var(--icon-inner-size) * 0.18);
-            background: #e7a6f7;
-            border-radius: 6px 6px 1px 1px;
-        }
-        .btn, .icon-btn-label {
-            padding: var(--btn-vert-padding) var(--btn-horiz-padding);
-            border: none;
-            border-radius: 18px;
-            font-size: var(--btn-font-size);
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 6px;
-            background: linear-gradient(120deg, #aeb8ff, #e7a6f7);
-            color: white;
-            box-shadow: 0 2px 12px 0 rgba(160,0,174,0.07);
-            transition: background 0.3s;
-            text-align: center;
-            outline: none;
-            white-space: nowrap;
-        }
-        .icon-btn-label:hover,
-        .icon-btn:focus .icon-btn-label {
-            background: linear-gradient(120deg, #7fd4ea, #e7abfc);
-        }
-
-        /* Keep layout responsive on very small screens */
-        @media (max-width: 560px) {
-            .container {
-                flex-direction: column;
-                gap: 28px;
-                padding: 20px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
-<canvas class="bubble-bg"></canvas>
-<div class="container">
-    <div class="icon-box">
+  </head>
+  <body>
+    <canvas class="bubble-bg"></canvas>
+    <div class="container">
+      <div class="icon-box">
         <button class="icon-btn" onclick="alert('Account Information Clicked')">
-            <div class="icon-bg">
-                <!-- Use your own image here -->
-                <div class="icon-user"></div>
-            </div>
-            <span class="icon-btn-label">Account Information</span>
+          <div class="icon-bg">
+            <!-- Use your own image here -->
+            <div class="icon-user"></div>
+          </div>
+          <span class="icon-btn-label">Account Information</span>
         </button>
-    </div>
-    <div class="icon-box">
+      </div>
+      <div class="icon-box">
         <button class="icon-btn" onclick="alert('Access Files Clicked')">
-            <div class="icon-bg">
-                <!-- Use your own image here -->
-                <div class="icon-folder"></div>
-            </div>
-            <span class="icon-btn-label">Access Files</span>
+          <div class="icon-bg">
+            <!-- Use your own image here -->
+            <div class="icon-folder"></div>
+          </div>
+          <span class="icon-btn-label">Access Files</span>
         </button>
+      </div>
     </div>
-</div>
-<script>
-const canvas = document.querySelector('.bubble-bg');
-const ctx = canvas.getContext('2d');
+    <script>
+      const canvas = document.querySelector(".bubble-bg");
+      const ctx = canvas.getContext("2d");
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    drawBubbles();
-}
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        drawBubbles();
+      }
 
-function drawBubbles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+      function drawBubbles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Top and Bottom bubble parameters with variation
-    const baseRows = [
-        { baseY: 60, minR: 36, maxR: 70, offset: 30 }, // Top row
-        { baseY: canvas.height - 55, minR: 42, maxR: 85, offset: 34 } // Bottom row
-    ];
-    baseRows.forEach(row => {
-        let bubbles = [];
-        let x = 0;
-        while (x < canvas.width) {
-            let r = Math.floor(Math.random() * (row.maxR - row.minR) + row.minR);
+        // Top and Bottom bubble parameters with variation
+        const baseRows = [
+          { baseY: 60, minR: 36, maxR: 70, offset: 30 }, // Top row
+          { baseY: canvas.height - 55, minR: 42, maxR: 85, offset: 34 }, // Bottom row
+        ];
+        baseRows.forEach((row) => {
+          let bubbles = [];
+          let x = 0;
+          while (x < canvas.width) {
+            let r = Math.floor(
+              Math.random() * (row.maxR - row.minR) + row.minR
+            );
             // random vertical offset added to baseY, both positive and negative
             let y = row.baseY + (Math.random() - 0.5) * row.offset * 2;
             bubbles.push({ x: x + Math.floor(r * 0.8), y, r });
             x += r * 1.12 + Math.random() * 28; // randomize spacing a bit
-        }
-        bubbles.forEach(b => {
+          }
+          bubbles.forEach((b) => {
             // Linear gradient: left color (start) to right color (end) of bubble
-            const grad = ctx.createLinearGradient(b.x - b.r, b.y, b.x + b.r, b.y);
-            grad.addColorStop(0, '#e7a6f7d0');
-            grad.addColorStop(0.6, '#8caeed90');
-            grad.addColorStop(1, '#78e9dc40');
+            const grad = ctx.createLinearGradient(
+              b.x - b.r,
+              b.y,
+              b.x + b.r,
+              b.y
+            );
+            grad.addColorStop(0, "#e7a6f7d0");
+            grad.addColorStop(0.6, "#8caeed90");
+            grad.addColorStop(1, "#78e9dc40");
             ctx.beginPath();
             ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
             ctx.fillStyle = grad;
@@ -230,12 +250,12 @@ function drawBubbles() {
             ctx.lineWidth = 3;
             ctx.strokeStyle = "#fff6";
             ctx.stroke();
+          });
         });
-    });
-}
+      }
 
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-</script>
-</body>
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+    </script>
+  </body>
 </html>
