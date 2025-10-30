@@ -1,80 +1,133 @@
-body,
-html {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  font-family: "Poppins", Arial, sans-serif;
-  background: linear-gradient(90deg, #e7b7ee 0%, #a9d5ef 100%);
-}
-.bubble-bg {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: linear-gradient(90deg, #e7b7ee 0%, #a9d5ef 100%);
-}
-.bubble-bg:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(
-      circle at 20% 10%,
-      #e7b7ee60 0px,
-      transparent 100px
-    ),
-    radial-gradient(circle at 80% 10%, #a9d5ef60 0px, transparent 100px),
-    radial-gradient(circle at 10% 90%, #e7b7ee60 0px, transparent 110px),
-    radial-gradient(circle at 90% 90%, #a9d5ef60 0px, transparent 110px),
-    radial-gradient(circle at 50% 50%, #e7b7ee40 0px, transparent 200px);
-  z-index: 0;
-}
-.main-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  gap: 64px;
-  z-index: 2;
-}
-.icon-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.icon {
-  width: 120px;
-  height: 120px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 36px;
-  margin-bottom: 16px;
+body {
+  background: linear-gradient(
+    270deg,
+    #83daf2 0%,
+    rgba(116, 69, 173, 0.4) 45.67%,
+    #f597cf 100%
+  );
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  flex-direction: column;
 }
-.action-btn {
-  padding: 8px 20px;
-  font-size: 1em;
-  border: none;
-  border-radius: 22px;
-  font-weight: bold;
-  margin-top: 8px;
-  cursor: pointer;
+
+.cloudstop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: fit-content;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cloudsbot {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: fit-content;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.title {
+  text-align: center;
   color: #fff;
-  letter-spacing: 1px;
-  background: linear-gradient(90deg, #e7b7ee 0%, #f8c0ea 60%, #a9d5ef 100%);
-  box-shadow: 0 3px 6px 0 rgba(100, 80, 160, 0.1);
-  transition: background 0.2s;
+  font-family: Jomhuria;
+  font-size: 90px;
+  margin-bottom: 0px;
+  font-weight: normal;
+  margin-top: 30px;
+  z-index: 3;
+  -webkit-text-stroke: 2px rgba(116, 69, 173, 0.4);
 }
-.info-btn {
-  background: linear-gradient(90deg, #e7b7ee 5%, #f8c0ea 90%);
+
+#accountBtn {
+  border-radius: 100px;
+  border: 3px solid #fff;
+  background: linear-gradient(90deg, #83daf2 0%, #f597cf 100%);
+  color: #fff;
+  font-family: Jomhuria;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration: none;
+  padding: 0 7px;
+  width: fit-content;
+  height: max-content;
 }
-.files-btn {
-  background: linear-gradient(90deg, #a9d5ef 5%, #79d9fa 90%);
+
+#accountIcn {
+  height: max-content;
+  display: inline-block;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 60px;
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.7);
 }
-.action-btn:hover {
-  background: linear-gradient(270deg, #f8c0ea 40%, #e7b7ee 90%);
+
+#accountIcn svg {
+  display: block;
+  width: 180px;
+  height: auto;
+}
+
+.btncontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 30px;
+  height: fit-content;
+  width: fit-content;
+  border-radius: 60px;
+}
+
+#filesBtn {
+  border-radius: 100px;
+  border: 3px solid #fff;
+  background: linear-gradient(90deg, #83daf2 0%, #f597cf 100%);
+  color: #fff;
+  font-family: Jomhuria;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration: none;
+  padding: 0 7px;
+  width: fit-content;
+  height: max-content;
+}
+
+#filesIcn {
+  height: max-content;
+  display: inline-block;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 60px;
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+#filesIcn svg {
+  display: block;
+  width: 180px;
+  height: auto;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: fit-content;
+  width: fit-content;
+  padding: 30px;
+  gap: 30px;
+  z-index: 2;
 }

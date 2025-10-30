@@ -103,7 +103,10 @@ def signup():
             # Use service role key to bypass RLS
             if SUPABASE_SERVICE_KEY:
                 supabase_admin = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
-                res = supabase_admin.table("profiles").insert(profile_data).execute()
+                res = supabase_admin.table("profiles") \
+                    .update(profile_data) \
+                    .eq("user_id", user_id) \
+                    .execute()
                 print("Profile created successfully with service role")
             else:
                 # Fallback: try with regular client (might fail due to RLS)

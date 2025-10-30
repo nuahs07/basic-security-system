@@ -1,241 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/homepage.css') }}"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jomhuria&family=Sigmar&family=Sigmar+One&display=swap"
+      rel="stylesheet"
+    />
+
     <title>Homepage</title>
-    <style>
-        :root{
-            /* Keep original sizes as minimum, scale up with viewport */
-            --icon-bg-size: clamp(170px, 14vw, 300px); /* min 170px */
-            --icon-inner-pct: 0.47; /* ~80/170 */
-            --icon-inner-size: calc(var(--icon-bg-size) * var(--icon-inner-pct));
-            --icon-radius: calc(var(--icon-bg-size) * 0.188); /* ~32px @170px */
-            --btn-font-size: clamp(1.1em, calc(var(--icon-bg-size) * 0.08), 1.3em);
-            --btn-vert-padding: clamp(8px, calc(var(--icon-bg-size) * 0.03), 16px);
-            --btn-horiz-padding: clamp(28px, calc(var(--icon-bg-size) * 0.12), 40px);
-            --container-padding: clamp(20px, 3vw, 80px);
-            --container-gap: clamp(60px, 8vw, 140px); /* spacing between buttons and to edges */
-        }
-
-        html, body {
-            height: 100%;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(120deg, #e7a6f7, #8caeed, #78e9dc);
-            position: relative;
-            overflow: hidden;
-        }
-        .bubble-bg {
-            position: absolute;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-        }
-        .container {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 0 var(--container-padding);
-            gap: var(--container-gap);
-            box-sizing: border-box;
-        }
-        .icon-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0; /* spacing handled by container gap & padding */
-        }
-        .icon-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: none;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            transition: box-shadow 0.2s;
-        }
-        .icon-btn:focus,
-        .icon-btn:hover {
-            box-shadow: 0 0 0 4px #8caeed55;
-        }
-        .icon-bg {
-            width: var(--icon-bg-size);
-            height: var(--icon-bg-size);
-            border-radius: var(--icon-radius);
-            background: linear-gradient(120deg, #eed1fdbb, #daffff99);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 14px;
-            box-shadow: 0 2px 24px 0 rgba(160,0,174,0.07);
-        }
-        .icon-user {
-            width: var(--icon-inner-size);
-            height: var(--icon-inner-size);
-            background: none;
-            border-radius: 50%;
-            position: relative;
-        }
-        .icon-user:before {
-            content: '';
-            display: block;
-            background: #8bc4e8;
-            width: calc(var(--icon-inner-size) * 0.55);
-            height: calc(var(--icon-inner-size) * 0.55);
-            border-radius: 50%;
-            position: absolute;
-            top: 0; left: 22%;
-        }
-        .icon-user:after {
-            content: '';
-            display: block;
-            background: #e7a6f7;
-            width: calc(var(--icon-inner-size) * 0.88);
-            height: calc(var(--icon-inner-size) * 0.38);
-            border-radius: 14px 14px 18px 18px;
-            position: absolute;
-            bottom: 6%; left: 6%;
-        }
-        .icon-folder {
-            width: var(--icon-inner-size);
-            height: var(--icon-inner-size);
-            background: none;
-            position: relative;
-        }
-        .icon-folder:before {
-            content: '';
-            display: block;
-            position: absolute;
-            left: calc(var(--icon-inner-size) * 0.16);
-            top: calc(var(--icon-inner-size) * 0.42);
-            width: calc(var(--icon-inner-size) * 0.70);
-            height: calc(var(--icon-inner-size) * 0.44);
-            background: #8bc4e8;
-            border-radius: 8px;
-        }
-        .icon-folder:after {
-            content: '';
-            display: block;
-            position: absolute;
-            left: calc(var(--icon-inner-size) * 0.16);
-            top: calc(var(--icon-inner-size) * 0.24);
-            width: calc(var(--icon-inner-size) * 0.40);
-            height: calc(var(--icon-inner-size) * 0.18);
-            background: #e7a6f7;
-            border-radius: 6px 6px 1px 1px;
-        }
-        .btn, .icon-btn-label {
-            padding: var(--btn-vert-padding) var(--btn-horiz-padding);
-            border: none;
-            border-radius: 18px;
-            font-size: var(--btn-font-size);
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 6px;
-            background: linear-gradient(120deg, #aeb8ff, #e7a6f7);
-            color: white;
-            box-shadow: 0 2px 12px 0 rgba(160,0,174,0.07);
-            transition: background 0.3s;
-            text-align: center;
-            outline: none;
-            white-space: nowrap;
-        }
-        .icon-btn-label:hover,
-        .icon-btn:focus .icon-btn-label {
-            background: linear-gradient(120deg, #7fd4ea, #e7abfc);
-        }
-
-        /* Keep layout responsive on very small screens */
-        @media (max-width: 560px) {
-            .container {
-                flex-direction: column;
-                gap: 28px;
-                padding: 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-<canvas class="bubble-bg"></canvas>
-<div class="container">
-    <div class="icon-box">
-        <button class="icon-btn" onclick="alert('Account Information Clicked')">
-            <div class="icon-bg">
-                <!-- Use your own image here -->
-                <div class="icon-user"></div>
-            </div>
-            <span class="icon-btn-label">Account Information</span>
-        </button>
+  </head>
+  <body>
+    <div class="cloudstop">
+      <img
+        src="{{ url_for('static', filename='styles/images/Group 129.png') }}"
+        style="width: 100%; display: block"
+      />
     </div>
-    <div class="icon-box">
-        <button class="icon-btn" onclick="alert('Access Files Clicked')">
-            <div class="icon-bg">
-                <!-- Use your own image here -->
-                <div class="icon-folder"></div>
-            </div>
-            <span class="icon-btn-label">Access Files</span>
+
+    <h1 class="title">Homepage</h1>
+
+    <div class="container">
+      <div class="btncontainer">
+        <a href="/index.html" id="accountIcn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="221"
+            height="246"
+            viewBox="0 0 221 246"
+            fill="none"
+          >
+            <path
+              d="M24.5557 0.5H196.444C209.686 0.5 220.5 11.0452 220.5 23.9033V191.23C220.5 204.089 209.686 214.634 196.444 214.634H147.131L146.985 214.775L118.746 242.146C114.152 246.618 106.726 246.618 102.132 242.146L74.0156 214.776L73.8701 214.634H24.5557C11.3135 214.634 0.500034 204.089 0.5 191.23V23.9033L0.507812 23.3027C0.834788 10.7169 11.4012 0.5 24.5557 0.5ZM110.5 119.019C98.1556 119.019 79.6751 122.32 64.2695 128.618C56.5661 131.768 49.5997 135.679 44.5518 140.328C39.5019 144.979 36.333 150.407 36.333 156.57V167.826H184.667V156.57C184.667 150.407 181.498 144.979 176.448 140.328C171.4 135.679 164.434 131.768 156.73 128.618C141.325 122.32 122.844 119.019 110.5 119.019ZM110.5 38.9414C91.9429 38.9414 76.8499 53.6141 76.8496 71.7109C76.8496 89.808 91.9427 104.481 110.5 104.481C129.057 104.481 144.15 89.808 144.15 71.7109C144.15 53.6141 129.057 38.9414 110.5 38.9414Z"
+              fill="url(#paint0_linear_48_940)"
+              stroke="white"
+            />
+            <defs>
+              <linearGradient
+                id="paint0_linear_48_940"
+                x1="221"
+                y1="123"
+                x2="0"
+                y2="123"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#F597CF" />
+                <stop offset="1" stop-color="#83DAF2" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </a>
+        <a href="/index.html" id="accountBtn">Account Information</a>
+      </div>
+
+      <div class="btncontainer">
+        <button id="filesIcn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="256"
+            height="250"
+            viewBox="0 0 256 250"
+            fill="none"
+          >
+            <g clip-path="url(#clip0_48_1008)">
+              <path
+                d="M10.6667 125C10.6667 41.6667 42.6667 10.4167 128 10.4167C213.333 10.4167 245.333 41.6667 245.333 125C245.333 208.333 213.333 239.583 128 239.583C42.6667 239.583 10.6667 208.333 10.6667 125Z"
+                fill="url(#paint0_linear_48_1008)"
+              />
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M81.4933 89.8957H131.093L128.853 82.2916C128.169 80.0772 126.749 78.1484 124.817 76.8093C122.886 75.4702 120.553 74.797 118.187 74.8957H74.6667C71.8377 74.8957 69.1246 75.9932 67.1242 77.9467C65.1238 79.9002 64 82.5497 64 85.3124V106.875C64 104.636 64.4532 102.42 65.3336 100.353C66.214 98.2863 67.5043 96.4099 69.1301 94.8318C70.7559 93.2538 72.6852 92.0053 74.807 91.1582C76.9288 90.311 79.2011 89.882 81.4933 89.8957Z"
+                fill="#ECE2F1"
+              />
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M181.333 175.104H74.6667C71.8377 175.104 69.1246 174.007 67.1242 172.053C65.1238 170.1 64 167.45 64 164.687V100.312C64 97.5497 65.1238 94.9002 67.1242 92.9467C69.1246 90.9932 71.8377 89.8958 74.6667 89.8958H181.333C184.162 89.8958 186.875 90.9932 188.876 92.9467C190.876 94.9002 192 97.5497 192 100.312V164.687C192 166.055 191.724 167.41 191.188 168.674C190.652 169.938 189.866 171.086 188.876 172.053C187.885 173.02 186.709 173.788 185.415 174.311C184.121 174.835 182.734 175.104 181.333 175.104Z"
+                fill="#E1E8F5"
+              />
+            </g>
+            <defs>
+              <linearGradient
+                id="paint0_linear_48_1008"
+                x1="128"
+                y1="10.4167"
+                x2="128"
+                y2="239.583"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#83DAF2" />
+                <stop offset="1" stop-color="#F597CF" />
+              </linearGradient>
+              <clipPath id="clip0_48_1008">
+                <rect width="256" height="250" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
         </button>
+        <button id="filesBtn">Access Files</button>
+      </div>
     </div>
-</div>
-<script>
-const canvas = document.querySelector('.bubble-bg');
-const ctx = canvas.getContext('2d');
+    <div class="cloudsbot">
+      <img
+        src="{{ url_for('static', filename='styles/images/Group 126.png') }}"
+        style="width: 100%; display: block"
+      />
+    </div>
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    drawBubbles();
-}
-
-function drawBubbles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Top and Bottom bubble parameters with variation
-    const baseRows = [
-        { baseY: 60, minR: 36, maxR: 70, offset: 30 }, // Top row
-        { baseY: canvas.height - 55, minR: 42, maxR: 85, offset: 34 } // Bottom row
-    ];
-    baseRows.forEach(row => {
-        let bubbles = [];
-        let x = 0;
-        while (x < canvas.width) {
-            let r = Math.floor(Math.random() * (row.maxR - row.minR) + row.minR);
-            // random vertical offset added to baseY, both positive and negative
-            let y = row.baseY + (Math.random() - 0.5) * row.offset * 2;
-            bubbles.push({ x: x + Math.floor(r * 0.8), y, r });
-            x += r * 1.12 + Math.random() * 28; // randomize spacing a bit
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://porcvcjxmjwpmhpvqckj.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcmN2Y2p4bWp3cG1ocHZxY2tqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzc4MzYsImV4cCI6MjA3Njg1MzgzNn0.r0CHtaPGHNfCe4SAm4MwBq8vAyyadYEbJhgI1g1LpEU";
+      const supabase = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: false,
+          },
         }
-        bubbles.forEach(b => {
-            // Linear gradient: left color (start) to right color (end) of bubble
-            const grad = ctx.createLinearGradient(b.x - b.r, b.y, b.x + b.r, b.y);
-            grad.addColorStop(0, '#e7a6f7d0');
-            grad.addColorStop(0.6, '#8caeed90');
-            grad.addColorStop(1, '#78e9dc40');
-            ctx.beginPath();
-            ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-            ctx.fillStyle = grad;
-            ctx.fill();
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = "#fff6";
-            ctx.stroke();
-        });
-    });
-}
+      );
 
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-</script>
-</body>
+      // Check if user is logged in
+      async function checkAuth() {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session) {
+          // Redirect to login if not authenticated
+          window.location.href = "/";
+        }
+      }
+
+      // Disabled button click handler
+      document.getElementById("filesBtn").addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("This feature is not yet available.");
+      });
+
+      // Check authentication on page load
+      checkAuth();
+    </script>
+  </body>
 </html>

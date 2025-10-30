@@ -23,18 +23,93 @@
         color: green;
         font-size: 24px;
       }
+      .error {
+        color: red;
+        font-size: 24px;
+      }
+      .loading {
+        color: #666;
+        font-size: 18px;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="success">Email confirmed successfully!</div>
-      <p>You can now <a href="/static/login.html">login</a>.</p>
+      <div id="message" class="loading">Confirming your email...</div>
+      <p id="submessage"></p>
     </div>
 
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
-      setTimeout(() => {
-        window.location.href = "/static/login.html";
-      }, 3000);
+      // Supabase configuration
+      const SUPABASE_URL = "https://porcvcjxmjwpmhpvqckj.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcmN2Y2p4bWp3cG1ocHZxY2tqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzc4MzYsImV4cCI6MjA3Njg1MzgzNn0.r0CHtaPGHNfCe4SAm4MwBq8vAyyadYEbJhgI1g1LpEU";
+
+      // Initialize Supabase client
+      const supabase = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+      const messageEl = document.getElementById("message");
+      const submessageEl = document.getElementById("submessage");
+
+      // Handle email confirmation
+      async function handleEmailConfirmation() {
+        try {
+          // Extract the hash fragment from the URL
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const accessToken = hashParams.get("access_token");
+          const refreshToken = hashParams.get("refresh_token");
+          const type = hashParams.get("type");
+
+          if (accessToken && refreshToken) {
+            // Set the session using the tokens from the URL
+            const { data, error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken
+            });
+
+            if (error) {
+              throw error;
+            }
+
+            // Success - email confirmed
+            messageEl.className = "success";
+            messageEl.textContent = "Email confirmed successfully!";
+            submessageEl.innerHTML = 'You can now <a href="/">login</a>.';
+            
+            // Redirect to login after 3 seconds
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 3000);
+          } else if (type === "recovery") {
+            // This is a password recovery link, not email confirmation
+            messageEl.className = "success";
+            messageEl.textContent = "Password reset link received!";
+            submessageEl.innerHTML = 'You can now <a href="/">reset your password</a>.';
+          } else {
+            // No tokens found - might already be confirmed or invalid link
+            messageEl.className = "success";
+            messageEl.textContent = "Email confirmation processed!";
+            submessageEl.innerHTML = 'You can now <a href="/">login</a>.';
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 3000);
+          }
+        } catch (error) {
+          console.error("Email confirmation error:", error);
+          messageEl.className = "error";
+          messageEl.textContent = "Error confirming email";
+          submessageEl.textContent = error.message || "Please try again or contact support.";
+        }
+      }
+
+      // Run on page load
+      handleEmailConfirmation();
     </script>
   </body>
 </html>
