@@ -108,6 +108,9 @@
         <button id="filesBtn">Access Files</button>
       </div>
     </div>
+
+    <button id="logoutBtn">Logout</button>
+
     <div class="cloudsbot">
       <img
         src="{{ url_for('static', filename='styles/images/Group 126.png') }}"
@@ -131,6 +134,14 @@
           },
         }
       );
+
+      // Logout button handler
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", async () => {
+          await supabase.auth.signOut();
+          window.location.href = "/";
+        });
 
       // Check if user is logged in
       async function checkAuth() {
