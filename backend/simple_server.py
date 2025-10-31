@@ -38,7 +38,7 @@ def serve_account_info():
     """Serves the account info page."""
     return render_template('index.html')
 
-@app.route('/confirm-email') 
+@app.route('/api/confirm-email') 
 def handle_email_confirm():
     """Serves the confirmation success page."""
     return render_template('confirm-email.html')
