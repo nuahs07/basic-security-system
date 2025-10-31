@@ -28,6 +28,16 @@ def serve_signup():
     """Serves the signup page."""
     return render_template('signup-direct.html')
 
+@app.route('/forgot-password')
+def serve_forgot_password():
+    """Serves the forgot password page."""
+    return render_template('forgot-password.html')
+
+@app.route('/reset-password')
+def serve_reset_password():
+    """Serves the reset password page."""
+    return render_template('reset-password.html')
+
 @app.route('/homepage')
 def serve_homepage():
     """Serves the main homepage."""

@@ -193,3 +193,146 @@ def login():
         print(f"🔥 FATAL login endpoint error: {e}")
         traceback.print_exc()
         return jsonify({'error': 'An internal server error occurred.'}), 500
+
+
+#forgot pass
+@auth_api.route('/api/forgot-password', methods=['POST'])
+def forgot_password():
+    """Send password reset email to user"""
+    try:
+        data = request.get_json()
+        email = data.get('email')
+
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+
+        print(f"Attempting password reset for: {email}")
+
+        # Use Supabase Auth to send password reset email
+        # This will send an email with a reset link to the user
+        response = supabase.auth.reset_password_for_email(
+            email,
+            {
+                "redirect_to": "http://localhost:5000/reset-password"
+            }
+        )
+
+        # Supabase doesn't raise an error if email doesn't exist (security feature)
+        # So we always return success to prevent email enumeration
+        return jsonify({
+            'success': True,
+            'message': 'If an account with that email exists, a password reset link has been sent.'
+        }), 200
+
+    except Exception as e:
+        print(f"Forgot password endpoint error: {e}")
+        traceback.print_exc()
+        # Still return success to prevent email enumeration
+        return jsonify({
+            'success': True,
+            'message': 'If an account with that email exists, a password reset link has been sent.'
+        }), 200
+
+
+#reset pass
+@auth_api.route('/api/reset-password', methods=['POST'])
+def reset_password():
+    """Reset user password using token from email"""
+    try:
+        data = request.get_json()
+        password = data.get('password')
+        token = data.get('token')
+
+        if not password:
+            return jsonify({'error': 'Password is required'}), 400
+        if len(password) < 6:
+            return jsonify({'error': 'Password must be at least 6 characters long'}), 400
+        if not token:
+            return jsonify({'error': 'Reset token is required'}), 400
+
+        print(f"Attempting password reset with token")
+
+        # Exchange the token for a session and update password
+        session_response = supabase.auth.set_session(token)
+        
+        if session_response.user:
+            user_id = session_response.user.id
+            
+            # Update the password
+            update_response = supabase.auth.update_user({
+                "password": password
+            })
+
+            if update_response.user:
+                print(f"Password reset successful for user {user_id}")
+                
+                # Also unlock the account if it was locked
+                supabase_admin.table("profiles").update({"is_locked": False}).eq("user_id", user_id).execute()
+                
+                # Clear failed login attempts
+                supabase_admin.table("login_attempts") \
+                              .delete() \
+                              .eq("user_id", user_id) \
+                              .eq("success", False) \
+                              .execute()
+
+                return jsonify({
+                    'success': True,
+                    'message': 'Password reset successful. You can now login with your new password.'
+                }), 200
+            else:
+                return jsonify({'error': 'Failed to update password'}), 400
+        else:
+            return jsonify({'error': 'Invalid or expired reset token'}), 400
+
+    except Exception as e:
+        print(f"Reset password endpoint error: {e}")
+        traceback.print_exc()
+        return jsonify({'error': 'Invalid or expired reset token'}), 400
+
+
+
+# reset pass (unlock account after reset)
+@auth_api.route('/api/reset-password-cleanup', methods=['POST'])
+def reset_password_cleanup():
+    """Unlock account and clear failed attempts after password reset"""
+    try:
+        # Get access token from Authorization header
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'Missing or invalid authorization token'}), 401
+        
+        access_token = auth_header.split('Bearer ')[1]
+        
+        # Create a Supabase client with the access token to get user info
+        from supabase import create_client
+        supabase_with_token = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+        
+        # Get the user from the token
+        user_res = supabase_with_token.auth.get_user(access_token)
+        
+        if not user_res.user:
+            return jsonify({'error': 'Invalid or expired token'}), 401
+
+        user_id = user_res.user.id
+        print(f"Cleaning up after password reset for user {user_id}")
+
+        # Unlock the account if it was locked
+        supabase_admin.table("profiles").update({"is_locked": False}).eq("user_id", user_id).execute()
+        
+        # Clear failed login attempts
+        supabase_admin.table("login_attempts") \
+                      .delete() \
+                      .eq("user_id", user_id) \
+                      .eq("success", False) \
+                      .execute()
+
+        return jsonify({
+            'success': True,
+            'message': 'Account unlocked and login attempts cleared.'
+        }), 200
+
+    except Exception as e:
+        print(f"Reset password cleanup error: {e}")
+        traceback.print_exc()
+        return jsonify({'error': 'An error occurred during cleanup'}), 500
