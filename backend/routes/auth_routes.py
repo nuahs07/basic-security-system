@@ -11,6 +11,8 @@ from security_logic.lockout_manager import (
     trigger_lock_if_needed,
     LOCKOUT_DURATION_SECONDS
 )
+from security_logic.data_encryptor import encrypt_data
+import base64
 from datetime import datetime
 import traceback
 
@@ -44,7 +46,7 @@ def signup():
             user_id = auth_response.user.id
             print(f"✅ User created in Auth: {user_id}")
 
-            # Insert or update user profile in 'profiles' table
+            # 1. Insert or update user profile in 'profiles' table
             profile_data = {
                 "user_id": user_id,
                 "username": username,
@@ -53,9 +55,34 @@ def signup():
                 "last_name": last_name,
                 "is_locked": False
             }
-
             # Use ADMIN client to bypass RLS and modify profile
             supabase_admin.table("profiles").upsert(profile_data).execute()
+            print("✅ Profile upserted.")
+
+            try:
+                initial_data = f"User {username}'s secure file, created on {datetime.now().isoformat()}"
+                
+                # 3. Encrypt it using the new user's password
+                encrypted_content_bytes, salt_bytes = encrypt_data(initial_data, password)
+                
+                # 4. Encode to base64 text for database storage
+                encrypted_content_text = base64.b64encode(encrypted_content_bytes).decode('utf-8')
+                salt_text = base64.b64encode(salt_bytes).decode('utf-8')
+
+                # 5. Insert the encrypted data and the salt into user_data
+                user_data_payload = {
+                    "user_id": user_id,
+                    "data_type": "profile_info",
+                    "data_content": encrypted_content_text, # Store encrypted text
+                    "salt": salt_text,                   # Store the salt
+                    "encrypted": True
+                }
+                data_result = supabase_admin.table("user_data").insert(user_data_payload).execute()
+                print(f"✅ Initial user data (encrypted) created.")
+
+            except Exception as data_err:
+                    print(f"❌ Warning: Could not create initial user_data. {data_err}")
+                    # Don't fail the whole signup, just log the warning
 
             return jsonify({
                 'success': True,
@@ -94,7 +121,6 @@ def login():
 
         # --- 1. Lookup user_id from the profiles table ---
         try:
-            # FIX: Use from_("auth.users") to query the auth schema
             user_res = supabase_admin.from_("profiles").select("user_id").eq("email", email).execute()
             if user_res.data and len(user_res.data) > 0:
                 user_id = user_res.data[0]['user_id']
@@ -128,7 +154,6 @@ def login():
 
                 log_login_attempt(user_id, email, request.remote_addr, True, None)
                 
-                # --- THIS IS THE FIX ---
                 # --- RESET FAILED ATTEMPTS ON SUCCESSFUL LOGIN ---
                 print(f"Resetting failed login attempts for user {user_id}.")
                 supabase_admin.table("login_attempts") \
@@ -136,7 +161,6 @@ def login():
                               .eq("user_id", user_id) \
                               .eq("success", False) \
                               .execute()
-                # --- END OF FIX ---
 
                 supabase_admin.table("profiles").update({"is_locked": False}).eq("user_id", user_id).execute()
 
