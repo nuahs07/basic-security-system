@@ -9,7 +9,7 @@ from security_logic.lockout_manager import (
     check_lock_status,
     log_login_attempt,
     trigger_lock_if_needed,
-    LOCKOUT_DURATION_MINUTES
+    LOCKOUT_DURATION_SECONDS
 )
 from datetime import datetime
 import traceback
@@ -147,7 +147,7 @@ def login():
                     return jsonify({
                         'error': 'account_locked',
                         'message': message,
-                        'lockout_duration_seconds': LOCKOUT_DURATION_MINUTES * 60
+                        'lockout_duration_seconds': LOCKOUT_DURATION_SECONDS
                     }), 429
 
             return jsonify({'error': 'Invalid email or password'}), 401

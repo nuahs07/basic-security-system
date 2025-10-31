@@ -2,7 +2,6 @@ from database.supabase_client import supabase_admin
 from datetime import datetime, timedelta, timezone
 
 MAX_FAILED_ATTEMPTS = 5
-# Renamed to seconds and set to 600 (10 minutes)
 LOCKOUT_DURATION_SECONDS = 30
 
 def get_utc_now():
