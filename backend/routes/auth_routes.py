@@ -169,12 +169,3 @@ def login():
         print(f"🔥 FATAL login endpoint error: {e}")
         traceback.print_exc()
         return jsonify({'error': 'An internal server error occurred.'}), 500
-
-
-# ----------------------------------------------------------
-# 🔵 EMAIL CONFIRMATION PLACEHOLDER
-# ----------------------------------------------------------
-@auth_api.route('/api/confirm-email', methods=['GET'])
-def confirm_email():
-    """Handle confirmation redirect (placeholder)."""
-    return jsonify({'message': 'Email confirmation simulated (this route is for demonstration).'}), 200
