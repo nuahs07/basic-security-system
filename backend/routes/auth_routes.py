@@ -94,7 +94,8 @@ def login():
 
         # --- 1. Lookup user_id from the profiles table ---
         try:
-            user_res = supabase_admin.table("profiles").select("user_id").eq("email", email).execute()
+            # FIX: Use from_("auth.users") to query the auth schema
+            user_res = supabase_admin.from_("profiles").select("user_id").eq("email", email).execute()
             if user_res.data and len(user_res.data) > 0:
                 user_id = user_res.data[0]['user_id']
                 print(f"Found user_id ({user_id}) for email {email}.")
@@ -126,6 +127,17 @@ def login():
                 print(f"✅ Login successful for user {user_id} ({email}).")
 
                 log_login_attempt(user_id, email, request.remote_addr, True, None)
+                
+                # --- THIS IS THE FIX ---
+                # --- RESET FAILED ATTEMPTS ON SUCCESSFUL LOGIN ---
+                print(f"Resetting failed login attempts for user {user_id}.")
+                supabase_admin.table("login_attempts") \
+                              .delete() \
+                              .eq("user_id", user_id) \
+                              .eq("success", False) \
+                              .execute()
+                # --- END OF FIX ---
+
                 supabase_admin.table("profiles").update({"is_locked": False}).eq("user_id", user_id).execute()
 
                 return jsonify({
@@ -138,18 +150,16 @@ def login():
                 raise Exception("Login response from Supabase unexpected.")
 
         except Exception as auth_error:
+            # --- 5. FAILURE ---
             print(f"❌ Authentication failed for {email}: {auth_error}")
             log_login_attempt(user_id, email, request.remote_addr, False, "Invalid credentials")
 
             if user_id: # Only lock if we know who the user is
-            # --- FIX 1: Unpack all THREE return values ---
                 is_now_locked, message, duration_sec = trigger_lock_if_needed(user_id, email)
-
                 if is_now_locked:
                     return jsonify({
                         'error': 'account_locked',
                         'message': message,
-                        # --- FIX 2: Use the new 'duration_sec' variable ---
                         'lockout_duration_seconds': duration_sec 
                     }), 429
 
