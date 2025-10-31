@@ -1,8 +1,7 @@
 from flask import Flask, render_template, send_from_directory, redirect
 from flask_cors import CORS
 from routes.auth_routes import auth_api
-# Import other route blueprints here as you make them
-# from backend.routes.data_routes import data_api 
+from routes.data_routes import data_api
 
 # Initialize Flask app
 app = Flask(
@@ -16,6 +15,7 @@ CORS(app)  # Enable CORS for frontend
 # --- Register API Blueprints ---
 app.register_blueprint(auth_api)
 # app.register_blueprint(data_api)
+app.register_blueprint(data_api)
 
 # --- Routes to Serve HTML Pages ---
 @app.route('/')
