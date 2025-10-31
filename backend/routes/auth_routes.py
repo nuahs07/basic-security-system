@@ -69,12 +69,16 @@ def login():
 
         # --- 1. Get User ID from email ---
         try:
-            list_users_response = supabase_admin.auth.admin.list_users(filter=f"email='{email}'")
-            if list_users_response and list_users_response.users and len(list_users_response.users) > 0:
-                user_id = list_users_response.users[0].id
+            # Use the correct function: get_user_by_email()
+            user_response = supabase_admin.auth.admin.get_user_by_email(email)
+            if user_response and user_response.user:
+                user_id = user_response.user.id
+                print(f"Found user_id ({user_id}) for email {email}.")
+            else:
+                print(f"No user found for email {email}.")
         except Exception as lookup_err:
-             print(f"Admin client error looking up user by email: {lookup_err}")
-
+            print(f"Admin client error looking up user by email: {lookup_err}")
+            
         # --- 2. Check if user is ALREADY locked ---
         if user_id:
             is_locked, message, remaining_sec = check_lock_status(user_id)

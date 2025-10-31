@@ -1,4 +1,3 @@
-@ -1,158 +0,0 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -50,7 +49,6 @@
           data: { session },
         } = await supabase.auth.getSession();
 
-        // If not available yet, wait for auth state change or retry briefly
         if (!session) {
           const waitForSession = new Promise((resolve) => {
             const { data: sub } = supabase.auth.onAuthStateChange(
@@ -61,7 +59,6 @@
                 }
               }
             );
-            // Fallback timeout
             setTimeout(async () => {
               sub.subscription.unsubscribe();
               const r = await supabase.auth.getSession();
@@ -76,11 +73,9 @@
           return;
         }
 
-        // Load account information automatically
         await showAccountInfo();
       }
 
-        // Logout button handler
       document
         .getElementById("logoutBtn")
         .addEventListener("click", async () => {
@@ -88,7 +83,6 @@
           window.location.href = "/";
         });
 
-      // Fetch profile from Supabase and show it
       async function showAccountInfo() {
         const {
           data: { session },
@@ -113,33 +107,23 @@
             accountContent.textContent = `Failed to load profile: ${error.message}`;
             return;
           }
-
-          // If no profile exists yet, use defaults
           if (!data) {
-            accountContent.innerHTML = `
-              <p><strong>Username:</strong> ${
-                user.user_metadata?.username ||
-                user.email?.split("@")[0] ||
-                "N/A"
-              }</p>
+             accountContent.innerHTML = `
+              <p><strong>Username:</strong> ${user.email.split("@")[0]}</p>
               <p><strong>First name:</strong> N/A</p>
               <p><strong>Last name:</strong> N/A</p>
-              <p><strong>Email:</strong> ${user.email || "N/A"}</p>
+              <p><strong>Email:</strong> ${user.email}</p>
               <p><strong>Account locked:</strong> No</p>
-              <p style="color: #666; font-size: 0.9em; margin-top: 12px;">Profile not yet created in database</p>
+              <p style="color: #666; font-size: 0.9em; margin-top: 12px;">Profile data missing.</p>
             `;
             return;
           }
 
-          const username =
-            data?.username ||
-            user.user_metadata?.username ||
-            user.email?.split("@")[0] ||
-            "N/A";
-          const firstName = data?.first_name || "N/A";
-          const lastName = data?.last_name || "N/A";
+          const username = data.username || user.email.split("@")[0];
+          const firstName = data.first_name || "N/A";
+          const lastName = data.last_name || "N/A";
           const email = user.email || "N/A";
-          const locked = data?.is_locked ? "Yes" : "No";
+          const locked = data.is_locked ? "Yes" : "No";
 
           accountContent.innerHTML = `
             <p><strong>Username:</strong> ${username}</p>
@@ -152,7 +136,6 @@
           accountContent.textContent = `Unexpected error: ${e.message}`;
         }
       }
-
       loadUser();
     </script>
   </body>
