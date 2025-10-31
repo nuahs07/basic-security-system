@@ -4,27 +4,54 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basic Security System</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        padding: 20px;
-      }
-    </style>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/index.css') }}"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jomhuria&family=Sigmar&family=Sigmar+One&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <h1>Welcome to your Account Information!</h1>
-    <button id="logoutBtn" style="margin-bottom: 20px">Logout</button>
-    <div
-      id="accountInfo"
-      style="
-        margin-top: 16px;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-      "
-    >
-      <h3>Your Account Information</h3>
-      <div id="accountContent">Loading...</div>
+    <div class="right">
+      <div class="accountIcn">
+        <img
+          src="{{ url_for('static', filename='styles/images/Group 154.png') }}"
+          style="width: 100%; display: block"
+        />
+      </div>
+      <button
+        id="backBtn"
+        style="margin-bottom: 20px"
+        onclick="window.location.href='http://localhost:5000/homepage'"
+      >
+        Back
+      </button>
+    </div>
+
+    <div class="left">
+      <h1 class="welc">Welcome to your Account Information!</h1>
+      <img
+        src="{{ url_for('static', filename='images/security_image.png') }}"
+        alt="Security Image"
+        style="width: 80%; max-width: 400px; margin-top: 40px"
+      />
+      <div
+        id="accountInfo"
+        style="
+          margin-top: 16px;
+          padding: 12px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+        "
+      >
+        <div id="accountContent">Loading...</div>
+      </div>
+      <button id="logoutBtn" style="margin-bottom: 20px">Logout</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -108,14 +135,16 @@
             return;
           }
           if (!data) {
-             accountContent.innerHTML = `
-              <p><strong>Username:</strong> ${user.email.split("@")[0]}</p>
-              <p><strong>First name:</strong> N/A</p>
-              <p><strong>Last name:</strong> N/A</p>
-              <p><strong>Email:</strong> ${user.email}</p>
-              <p><strong>Account locked:</strong> No</p>
-              <p style="color: #666; font-size: 0.9em; margin-top: 12px;">Profile data missing.</p>
-            `;
+            accountContent.innerHTML = `
+                          <p><strong>Username:</strong> ${
+                            user.email.split("@")[0]
+                          }</p>
+                          <p><strong>First name:</strong> N/A</p>
+                          <p><strong>Last name:</strong> N/A</p>
+                          <p><strong>Email:</strong> ${user.email}</p>
+                          <p><strong>Account locked:</strong> No</p>
+                          <p style="color: #666; font-size: 0.9em; margin-top: 12px;">Profile data missing.</p>
+                        `;
             return;
           }
 
@@ -123,14 +152,32 @@
           const firstName = data.first_name || "N/A";
           const lastName = data.last_name || "N/A";
           const email = user.email || "N/A";
-          const locked = data.is_locked ? "Yes" : "No";
+          const locked = data.is_locked === true; // ✅ boolean, not string
 
           accountContent.innerHTML = `
-            <p><strong>Username:</strong> ${username}</p>
-            <p><strong>First name:</strong> ${firstName}</p>
-            <p><strong>Last name:</strong> ${lastName}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Account locked:</strong> ${locked}</p>
+            <div class="info-field">
+              <div class="field-label">Username</div>
+              <div class="field-value">${username}</div>
+            </div>
+            <div class="info-field">
+              <div class="field-label">First Name</div>
+              <div class="field-value">${firstName}</div>
+            </div>
+            <div class="info-field">
+              <div class="field-label">Last Name</div>
+              <div class="field-value">${lastName}</div>
+            </div>
+            <div class="info-field">
+              <div class="field-label">Email</div>
+              <div class="field-value">${email}</div>
+            </div>
+            <div class="info-field">
+              <div class="field-label">Account Status</div>
+              <div class="status-badge ${locked ? "status-locked" : "status-active"}">
+                <span class="status-dot ${locked ? "dot-red" : "dot-green"}"></span>
+                ${locked ? "Account Locked" : "Account Active"}
+              </div>
+            </div>
           `;
         } catch (e) {
           accountContent.textContent = `Unexpected error: ${e.message}`;
