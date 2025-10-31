@@ -19,7 +19,7 @@
       <div id="lockout-box">
           <h1 id="lockout-message">Account Locked</h1>
           <p>Too many failed attempts. Please try again in:</p>
-          <h2 id="lockout-timer">10:00</h2>
+          <h2 id="lockout-timer"></h2>
       </div>
     </div>
 
@@ -84,7 +84,7 @@
             messageDiv.textContent = data.message || "Login failed.";
             messageDiv.style.color = "red";
             if (data.error === "account_locked") {
-              startLockoutTimer(data.lockout_duration_seconds || 600);
+              startLockoutTimer(data.lockout_duration_seconds || 30);
             }
           } else {
             messageDiv.textContent = "Login successful! Redirecting...";

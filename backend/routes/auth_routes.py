@@ -141,13 +141,16 @@ def login():
             print(f"❌ Authentication failed for {email}: {auth_error}")
             log_login_attempt(user_id, email, request.remote_addr, False, "Invalid credentials")
 
-            if user_id:
-                is_now_locked, message = trigger_lock_if_needed(user_id, email)
+            if user_id: # Only lock if we know who the user is
+            # --- FIX 1: Unpack all THREE return values ---
+                is_now_locked, message, duration_sec = trigger_lock_if_needed(user_id, email)
+
                 if is_now_locked:
                     return jsonify({
                         'error': 'account_locked',
                         'message': message,
-                        'lockout_duration_seconds': LOCKOUT_DURATION_SECONDS
+                        # --- FIX 2: Use the new 'duration_sec' variable ---
+                        'lockout_duration_seconds': duration_sec 
                     }), 429
 
             return jsonify({'error': 'Invalid email or password'}), 401
