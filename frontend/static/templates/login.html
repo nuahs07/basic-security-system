@@ -3,26 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='styles/login.css') }}"
-    />
+    <link rel="stylesheet" href="/static/styles/login.css" />
+    <link rel="stylesheet" href="/static/styles/lockout.css" />
+    
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Jomhuria&family=Sigmar&family=Sigmar+One&display=swap"
       rel="stylesheet"
     />
-
     <title>Login - Security System</title>
   </head>
   <body>
+    <div id="lockout-overlay">
+      <div id="lockout-box">
+          <h1 id="lockout-message">Account Locked</h1>
+          <p>Too many failed attempts. Please try again in:</p>
+          <h2 id="lockout-timer">10:00</h2>
+      </div>
+    </div>
+
     <div class="footer">
       <div class="container">
         <h2 class="title">Login</h2>
         <form id="loginForm">
-          <input type="name" id="username" placeholder="Username" required />
           <input type="email" id="email" placeholder="Email" required />
           <input
             type="password"
@@ -35,23 +39,6 @@
           </button>
         </form>
         <div id="message"></div>
-        <div
-          id="lockout-overlay"
-          style="
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            z-index: 999;
-          "
-        >
-          <h1 id="lockout-message"></h1>
-          <h2 id="lockout-timer"></h2>
-        </div>
       </div>
 
       <div class="tgt">
@@ -63,31 +50,20 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
       const SUPABASE_URL = "https://porcvcjxmjwpmhpvqckj.supabase.co";
       const SUPABASE_ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcmN2Y2p4bWp3cG1ocHZxY2tqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzc4MzYsImV4cCI6MjA3Njg1MzgzNn0.r0CHtaPGHNfCe4SAm4MwBq8vAyyadYEbJhgI1g1LpEU";
-
-      const supabase = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY,
-        {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: false,
-          },
-        }
-      );
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
       const loginForm = document.getElementById("loginForm");
       const messageDiv = document.getElementById("message");
       const loginButton = document.getElementById("loginButton");
+      const lockoutOverlay = document.getElementById("lockout-overlay");
+      const lockoutTimerEl = document.getElementById("lockout-timer");
 
       loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
@@ -108,47 +84,46 @@
             messageDiv.textContent = data.message || "Login failed.";
             messageDiv.style.color = "red";
             if (data.error === "account_locked") {
-              alert(data.message);
+              startLockoutTimer(data.lockout_duration_seconds || 600);
             }
           } else {
             messageDiv.textContent = "Login successful! Redirecting...";
             messageDiv.style.color = "green";
-
-            const { data: sessionData, error: sessionError } =
-              await supabase.auth.setSession({
+            
+            await supabase.auth.setSession({
                 access_token: data.access_token,
                 refresh_token: data.refresh_token || "",
-              });
-
-            if (sessionError) {
-              console.error("Error setting session:", sessionError);
-              messageDiv.textContent =
-                "Failed to set session: " + sessionError.message;
-              messageDiv.style.color = "red";
-              return;
-            }
-
-            const {
-              data: { session },
-            } = await supabase.auth.getSession();
-
-            if (session) {
-              window.location.href = "/homepage";
-            } else {
-              messageDiv.textContent =
-                "Session not set properly. Please try again.";
-              messageDiv.style.color = "red";
-            }
+            });
+            window.location.href = "/homepage";
           }
         } catch (error) {
-          messageDiv.textContent =
-            "Failed to connect to server: " + error.message;
+          messageDiv.textContent = "Failed to connect to server: " + error.message;
           messageDiv.style.color = "red";
         } finally {
           loginButton.disabled = false;
           loginButton.textContent = "Login";
         }
       });
+      
+      let timerInterval;
+      function startLockoutTimer(durationInSeconds) {
+        lockoutOverlay.style.display = 'flex';
+        let timer = durationInSeconds;
+        
+        clearInterval(timerInterval); // Clear any existing timers
+        
+        timerInterval = setInterval(() => {
+            const minutes = Math.floor(timer / 60);
+            const seconds = timer % 60;
+            lockoutTimerEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                lockoutOverlay.style.display = 'none';
+                messageDiv.textContent = 'You may try again now.';
+            }
+        }, 1000);
+      }
     </script>
   </body>
 </html>

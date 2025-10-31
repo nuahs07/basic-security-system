@@ -3,10 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='styles/signup.css') }}"
+      href="/static/styles/signup.css"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,113 +13,53 @@
       href="https://fonts.googleapis.com/css2?family=Jomhuria&family=Sigmar&family=Sigmar+One&display=swap"
       rel="stylesheet"
     />
-
-    <title>Signup - Direct Supabase</title>
+    <title>Signup - Security System</title>
   </head>
   <body>
     <div class="container">
       <div class="logo">
         <h1>Sign Up</h1>
       </div>
-
       <div id="alert" class="alert"></div>
-
       <form id="signupForm">
         <div class="form-group">
-          <input
-            type="text"
-            id="username"
-            name="username"
-            placeholder="Username"
-            required
-          />
+          <input type="text" id="username" name="username" placeholder="Username" required />
         </div>
-
         <div class="form-group">
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="email"
-            required
-          />
+          <input type="email" id="email" name="email" placeholder="Email" required />
         </div>
-
         <div class="form-group">
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            placeholder="firstName"
-            required
-          />
+          <input type="text" id="firstName" name="firstName" placeholder="First Name" />
         </div>
-
         <div class="form-group">
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            placeholder="lastName"
-            required
-          />
+          <input type="text" id="lastName" name="lastName" placeholder="Last Name" />
         </div>
-
         <div class="form-group">
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            minlength="6"
-            placeholder="Password (min 6 characters)"
-          />
+          <input type="password" id="password" name="password" required minlength="6" placeholder="Password (min 6 characters)"/>
         </div>
-
         <div class="form-group">
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            required
-            placeholder="Confirm Password"
-          />
+          <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm Password"/>
         </div>
-
         <button type="submit" class="btn-signup" id="submitBtn">
           Create Account
         </button>
-
         <div class="mamamo">
           <p class="accounting">Already have an account?</p>
           <a href="/" class="loggingin"> Log in</a>
         </div>
       </form>
-
       <div class="debug-info">
         <h4>Debug Info:</h4>
-        <pre id="debugInfo">
-Connecting directly to Supabase...
-Status: Ready to test...</pre
-        >
+        <pre id="debugInfo">Status: Ready to test...</pre>
       </div>
     </div>
 
-    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
-      // Supabase configuration
-      const SUPABASE_URL = "https://porcvcjxmjwpmhpvqckj.supabase.co";
-      const SUPABASE_ANON_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvcmN2Y2p4bWp3cG1ocHZxY2tqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzc4MzYsImV4cCI6MjA3Njg1MzgzNn0.r0CHtaPGHNfCe4SAm4MwBq8vAyyadYEbJhgI1g1LpEU";
-
-      // Initialize Supabase client
-      const supabase = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
-
+      // All your existing JavaScript for this page is fine.
+      // Make sure the fetch URL is: 'http://localhost:5000/api/signup'
+      // (The rest of your script from signup-direct.html goes here)
+      
       const debugInfo = document.getElementById("debugInfo");
       const passwordInput = document.getElementById("password");
       const confirmPasswordInput = document.getElementById("confirmPassword");
@@ -130,7 +69,6 @@ Status: Ready to test...</pre
         debugInfo.textContent = `[${timestamp}] ${message}`;
       }
 
-      // Confirm password validation
       confirmPasswordInput.addEventListener("input", function () {
         if (this.value !== passwordInput.value) {
           this.style.borderColor = "#e74c3c";
@@ -139,23 +77,12 @@ Status: Ready to test...</pre
         }
       });
 
-      // Sign-up function - Call backend API instead of Supabase directly
-      async function signupUser(
-        email,
-        password,
-        username,
-        firstName,
-        lastName
-      ) {
+      async function signupUser(email, password, username, firstName, lastName) {
         try {
           updateDebug("Calling backend API for signup...");
-
-          // Call your backend API instead of Supabase directly
           const response = await fetch("http://localhost:5000/api/signup", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               email: email,
               password: password,
@@ -164,100 +91,49 @@ Status: Ready to test...</pre
               last_name: lastName,
             }),
           });
-
           const result = await response.json();
-
           if (!response.ok) {
             throw new Error(result.error || "Signup failed");
           }
-
           updateDebug(`Backend API response: ${result.message}`);
-
-          return {
-            success: true,
-            user_id: result.user_id,
-            email: result.email,
-            username: result.username,
-            message: result.message,
-            needs_confirmation: true,
-          };
+          return { ...result, success: true, needs_confirmation: true };
         } catch (error) {
           console.error("Sign-up error:", error);
           throw error;
         }
       }
 
-      // Form submission
-      document
-        .getElementById("signupForm")
-        .addEventListener("submit", async function (e) {
+      document.getElementById("signupForm").addEventListener("submit", async function (e) {
           e.preventDefault();
-          updateDebug("Form submitted, starting sign-up process...");
-
-          // Clear previous alerts
+          updateDebug("Form submitted...");
           const alert = document.getElementById("alert");
           alert.classList.remove("show", "alert-error", "alert-success");
 
-          // Get form values
           const username = document.getElementById("username").value.trim();
           const email = document.getElementById("email").value.trim();
           const password = document.getElementById("password").value;
-          const confirmPassword =
-            document.getElementById("confirmPassword").value;
+          const confirmPassword = document.getElementById("confirmPassword").value;
           const firstName = document.getElementById("firstName").value.trim();
           const lastName = document.getElementById("lastName").value.trim();
 
-          // Validate
           if (password.length < 6) {
             showAlert("Password must be at least 6 characters long", "error");
-            updateDebug("Error: Password too short");
             return;
           }
-
           if (password !== confirmPassword) {
             showAlert("Passwords do not match", "error");
-            updateDebug("Error: Passwords do not match");
             return;
           }
 
-          // Disable submit button
           const submitBtn = document.getElementById("submitBtn");
           submitBtn.disabled = true;
-          submitBtn.innerHTML =
-            '<span class="loading"></span>Creating Account...';
+          submitBtn.innerHTML = '<span class="loading"></span>Creating Account...';
 
           try {
-            updateDebug(`Starting sign-up for: ${email}`);
-            const result = await signupUser(
-              email,
-              password,
-              username,
-              firstName,
-              lastName
-            );
-
+            const result = await signupUser(email, password, username, firstName, lastName);
             if (result.success) {
-              if (result.needs_confirmation) {
-                showAlert(
-                  `Success! User created. Please check your email (${result.email}) for confirmation link.`,
-                  "success"
-                );
-                updateDebug(
-                  `SUCCESS!\nUser ID: ${result.user_id}\nUsername: ${result.username}\nEmail: ${result.email}\n\nPlease check your email for confirmation!`
-                );
-              } else {
-                showAlert(
-                  `Success! User created with ID: ${result.user_id}`,
-                  "success"
-                );
-                updateDebug(
-                  `SUCCESS!\nUser ID: ${result.user_id}\nUsername: ${result.username}\nEmail: ${result.email}`
-                );
-              }
+              showAlert(`Success! Please check your email (${result.email}) for confirmation.`, "success");
               document.getElementById("signupForm").reset();
-            } else {
-              showAlert("Failed to create account", "error");
-              updateDebug("ERROR: Sign-up failed");
             }
           } catch (error) {
             showAlert(`Error: ${error.message}`, "error");
@@ -273,11 +149,7 @@ Status: Ready to test...</pre
         alert.textContent = message;
         alert.className = `alert alert-${type} show`;
       }
-
-      // Initial debug message
-      updateDebug(
-        "Ready! Fill the form and submit to test.\n\nUsing backend API - make sure backend is running on port 5000!"
-      );
+      updateDebug("Ready! Using backend API - make sure backend is running.");
     </script>
   </body>
 </html>
