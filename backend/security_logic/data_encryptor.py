@@ -18,7 +18,7 @@ def derive_key(password: str, salt: bytes) -> bytes:
     return base64.urlsafe_b64encode(kdf.derive(password.encode()))
 
 # --- "Clocking" (Encryption) Function ---
-def encrypt_data(data_to_encrypt: str, password: str) -> (bytes, bytes):
+def encrypt_data(data_to_encrypt: str, password: str) -> tuple[bytes, bytes]:
     """Encrypts data. Returns (encrypted_data_bytes, salt_bytes)"""
     salt = os.urandom(16) # Generate a new, random salt for every encryption
     key = derive_key(password, salt)
