@@ -35,20 +35,7 @@
 
     <div class="left">
       <h1 class="welc">Welcome to your Account Information!</h1>
-      <img
-        src="{{ url_for('static', filename='images/security_image.png') }}"
-        alt="Security Image"
-        style="width: 80%; max-width: 400px; margin-top: 40px"
-      />
-      <div
-        id="accountInfo"
-        style="
-          margin-top: 16px;
-          padding: 12px;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-        "
-      >
+      <div id="accountInfo">
         <div id="accountContent">Loading...</div>
       </div>
       <button id="logoutBtn" style="margin-bottom: 20px">Logout</button>
@@ -155,28 +142,40 @@
           const locked = data.is_locked === true; // ✅ boolean, not string
 
           accountContent.innerHTML = `
+          <div class="maincon">
+          <div class="infocon">
             <div class="info-field">
               <div class="field-label">Username</div>
               <div class="field-value">${username}</div>
             </div>
-            <div class="info-field">
-              <div class="field-label">First Name</div>
-              <div class="field-value">${firstName}</div>
-            </div>
-            <div class="info-field">
-              <div class="field-label">Last Name</div>
-              <div class="field-value">${lastName}</div>
+            <div class="names">
+              <div class="info-field">
+                <div class="field-label">First Name</div>
+                <div class="field-value">${firstName}</div>
+              </div>
+              <div class="info-field">
+                <div class="field-label">Last Name</div>
+                <div class="field-value">${lastName}</div>
+              </div>
             </div>
             <div class="info-field">
               <div class="field-label">Email</div>
               <div class="field-value">${email}</div>
             </div>
+            </div>
+            <div class="infocon">
             <div class="info-field">
               <div class="field-label">Account Status</div>
-              <div class="status-badge ${locked ? "status-locked" : "status-active"}">
-                <span class="status-dot ${locked ? "dot-red" : "dot-green"}"></span>
+              <div class="status-badge ${
+                locked ? "status-locked" : "status-active"
+              }">
+                <span class="status-dot ${
+                  locked ? "dot-red" : "dot-green"
+                }"></span>
                 ${locked ? "Account Locked" : "Account Active"}
               </div>
+            </div>
+            </div>
             </div>
           `;
         } catch (e) {
