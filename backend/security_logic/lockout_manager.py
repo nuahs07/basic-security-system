@@ -2,7 +2,8 @@ from database.supabase_client import supabase_admin
 from datetime import datetime, timedelta, timezone
 
 MAX_FAILED_ATTEMPTS = 5
-LOCKOUT_DURATION_MINUTES = 10
+# Renamed to seconds and set to 600 (10 minutes)
+LOCKOUT_DURATION_SECONDS = 30
 
 def get_utc_now():
     """Returns the current time in UTC."""
@@ -26,6 +27,7 @@ def check_lock_status(user_id):
             if now_utc < unlock_at:
                 remaining = unlock_at - now_utc
                 print(f"User {user_id} is locked. Unlock at: {unlock_at}, Now: {now_utc}")
+                # Return the remaining seconds for the timer
                 return True, f'Account locked. Try again in {remaining.seconds // 60} minutes {remaining.seconds % 60} seconds.', remaining.seconds
             else:
                  print(f"User {user_id} was locked, but lock expired.")
@@ -45,7 +47,6 @@ def log_login_attempt(user_id, email, ip_address, success, reason=""):
             "success": success,
             "failure_reason": reason,
             "ip_address": ip_address
-            # We let the database handle the UTC timestamp
         }).execute()
     except Exception as e:
         print(f"Error logging login attempt: {e}")
@@ -53,9 +54,9 @@ def log_login_attempt(user_id, email, ip_address, success, reason=""):
 def trigger_lock_if_needed(user_id, email):
     """Counts failures and triggers a lock if the threshold is met."""
     try:
-        # --- FIX: Use UTC time ---
         now_utc = get_utc_now()
-        time_window_start = now_utc - timedelta(minutes=LOCKOUT_DURATION_MINUTES * 2)
+        # Use seconds for the time window calculation
+        time_window_start = now_utc - timedelta(seconds=LOCKOUT_DURATION_SECONDS * 2)
         
         failures = supabase_admin.table("login_attempts") \
                                  .select("attempt_id", count='exact') \
@@ -64,11 +65,23 @@ def trigger_lock_if_needed(user_id, email):
                                  .gte("timestamp", time_window_start.isoformat()) \
                                  .execute()
         
-        # This count will now be accurate
         print(f"User {user_id} has {failures.count} recent failed attempts.")
 
         if failures.count >= MAX_FAILED_ATTEMPTS:
-            # Check if already locked recently to avoid spam
+            # --- ASCENDING LOCKOUT DURATION (in Seconds) ---
+            # 1. Count previous locks
+            previous_locks_res = supabase_admin.table("account_locks") \
+                                               .select("lock_id", count='exact') \
+                                               .eq("user_id", user_id) \
+                                               .execute()
+            previous_lock_count = previous_locks_res.count
+            print(f"User has {previous_lock_count} previous lock(s).")
+
+            # 2. Calculate new duration in seconds (1st=600s, 2nd=1200s, 3rd=1800s)
+            new_duration_seconds = LOCKOUT_DURATION_SECONDS * (previous_lock_count + 1)
+            # --- END NEW LOGIC ---
+
+            # Check if already locked recently (to avoid spamming new entries)
             recent_lock = supabase_admin.table("account_locks") \
                                       .select("lock_id") \
                                       .eq("user_id", user_id) \
@@ -77,9 +90,9 @@ def trigger_lock_if_needed(user_id, email):
                                       .execute()
             
             if not recent_lock.data:
-                print(f"Threshold reached. Locking account for user {user_id}")
-                # --- FIX: Use UTC time ---
-                unlock_time = now_utc + timedelta(minutes=LOCKOUT_DURATION_MINUTES)
+                print(f"Threshold reached. Locking account for {new_duration_seconds} seconds.")
+                # Use seconds for the unlock time calculation
+                unlock_time = now_utc + timedelta(seconds=new_duration_seconds)
                 
                 supabase_admin.table("account_locks").insert({
                     "user_id": user_id,
@@ -89,9 +102,11 @@ def trigger_lock_if_needed(user_id, email):
                 
                 supabase_admin.table("profiles").update({"is_locked": True}).eq("user_id", user_id).execute()
             
-            return True, f'Account locked for {LOCKOUT_DURATION_MINUTES} minutes.'
+            # Return the new duration in seconds
+            return True, f'Account locked for {new_duration_seconds // 60} minutes.', new_duration_seconds
             
     except Exception as e:
         print(f"Error in trigger_lock_if_needed: {e}")
         
-    return False, "Invalid email or password"
+    # Return 0 seconds if no lock was triggered
+    return False, "Invalid email or password", 0
