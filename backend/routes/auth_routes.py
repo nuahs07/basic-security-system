@@ -78,11 +78,13 @@ def login():
         # --- 2. Check if user is ALREADY locked ---
         if user_id:
             is_locked, message, remaining_sec = check_lock_status(user_id)
-            if is_locked:
+            if is_now_locked:
+                # Get the duration from your lockout_manager constant
+                from security_logic.lockout_manager import LOCKOUT_DURATION_MINUTES
                 return jsonify({
                     'error': 'account_locked',
                     'message': message,
-                    'lockout_duration_seconds': remaining_sec
+                    'lockout_duration_seconds': LOCKOUT_DURATION_MINUTES * 60
                 }), 429
 
         # --- 3. ATTEMPT LOGIN ---
