@@ -57,7 +57,7 @@
             </defs>
           </svg>
         </a>
-        <<a href="/account-info" id="accountBtn">Account Information</a>
+        <a href="/account-info" id="accountBtn">Account Information</a>
       </div>
 
       <div class="btncontainer">
@@ -155,11 +155,55 @@
         }
       }
 
-      // Disabled button click handler
+      // --- NEW: "Access Files" button logic ---
       document.getElementById("filesBtn").addEventListener("click", (e) => {
-        e.preventDefault();
-        alert("This feature is not yet available.");
+        accessSecureData();
       });
+      document.getElementById("filesIcn").addEventListener("click", (e) => {
+        accessSecureData();
+      });
+
+      async function accessSecureData() {
+        // 1. Get the session to prove we are logged in
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            alert("You are not logged in.");
+            window.location.href = "/";
+            return;
+        }
+
+        // 2. Ask user for their password to decrypt the data
+        const password = prompt("To access your secure data, please re-enter your password:");
+        if (!password) {
+            alert("Password entry cancelled.");
+            return;
+        }
+
+        // 3. Call our new backend API
+        try {
+            const response = await fetch("http://localhost:5000/api/access-file", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${session.access_token}` // Send our login token
+                },
+                body: JSON.stringify({ password: password }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Show errors (e.g., "Invalid password")
+                alert(`Error: ${data.error}`);
+            } else {
+                // 4. Success! Show the decrypted data
+                alert(`SUCCESS!\n\nYour secret data is:\n\n"${data.decrypted_data}"`);
+            }
+        } catch (error) {
+            alert(`Network error: ${error.message}`);
+        }
+      }
+      // --- END NEW LOGIC ---
 
       // Check authentication on page load
       checkAuth();
