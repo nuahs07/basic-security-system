@@ -137,15 +137,15 @@ input:focus {
   margin-top: 10px;
 }
 
-.registerbutton {
+.loginbtn {
   border-radius: 20px;
   border: 2px solid #fff;
   background: linear-gradient(90deg, #83daf2 0%, #f597cf 100%);
   color: #fff;
   font-family: Jomhuria;
-  font-size: 45px;
+  font-size: 35px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: normal;
   line-height: normal;
   width: fit-content;
   padding: 0 20px;
@@ -154,4 +154,18 @@ input:focus {
 #message {
   margin-top: 15px;
   font-weight: bold;
+}
+
+.registerbutton {
+  border-radius: 20px;
+  border: 2px solid #fff;
+  background: linear-gradient(90deg, #f597cf 0%, #83daf2 100%);
+  color: #fff;
+  font-family: Jomhuria;
+  font-size: 35px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: normal;
+  width: fit-content;
+  padding: 0 20px;
 }

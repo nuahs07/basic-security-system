@@ -118,6 +118,49 @@
       />
     </div>
 
+    <!-- Password Prompt Modal -->
+    <div class="modal-overlay" id="passwordModal">
+      <div class="modal">
+        <h3>Password Required</h3>
+        <p>To access your secure data, please re-enter your password:</p>
+        <input
+          type="password"
+          id="passwordInput"
+          placeholder="Enter password"
+        />
+        <div class="modal-buttons">
+          <button
+            class="modal-btn modal-btn-secondary"
+            onclick="closePasswordModal()"
+          >
+            Cancel
+          </button>
+          <button
+            class="modal-btn modal-btn-primary"
+            onclick="submitPassword()"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="modal-overlay" id="alertModal">
+      <div class="modal" id="alertContent">
+        <h3 id="alertTitle">Alert</h3>
+        <p id="alertMessage"></p>
+        <div id="alertData"></div>
+        <button
+          class="modal-btn modal-btn-primary"
+          style="width: 100%"
+          onclick="closeAlertModal()"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
       const SUPABASE_URL = "https://porcvcjxmjwpmhpvqckj.supabase.co";
@@ -150,12 +193,61 @@
         } = await supabase.auth.getSession();
 
         if (!session) {
-          // Redirect to login if not authenticated
           window.location.href = "/";
         }
       }
 
-      // --- NEW: "Access Files" button logic ---
+      // Modal Functions
+      let passwordResolve;
+
+      function showPasswordModal() {
+        return new Promise((resolve) => {
+          passwordResolve = resolve;
+          document.getElementById("passwordModal").classList.add("active");
+          document.getElementById("passwordInput").value = "";
+          document.getElementById("passwordInput").focus();
+        });
+      }
+
+      function closePasswordModal() {
+        document.getElementById("passwordModal").classList.remove("active");
+        if (passwordResolve) passwordResolve(null);
+      }
+
+      function submitPassword() {
+        const password = document.getElementById("passwordInput").value;
+        document.getElementById("passwordModal").classList.remove("active");
+        if (passwordResolve) passwordResolve(password);
+      }
+
+      function showAlert(title, message, type = "info", secretData = null) {
+        const modal = document.getElementById("alertContent");
+        modal.className = "modal " + type;
+        document.getElementById("alertTitle").textContent = title;
+        document.getElementById("alertMessage").textContent = message;
+
+        const dataDiv = document.getElementById("alertData");
+        if (secretData) {
+          dataDiv.innerHTML = `<div class="secret-data">${secretData}</div>`;
+        } else {
+          dataDiv.innerHTML = "";
+        }
+
+        document.getElementById("alertModal").classList.add("active");
+      }
+
+      function closeAlertModal() {
+        document.getElementById("alertModal").classList.remove("active");
+      }
+
+      // Handle Enter key in password input
+      document
+        .getElementById("passwordInput")
+        .addEventListener("keypress", (e) => {
+          if (e.key === "Enter") submitPassword();
+        });
+
+      // "Access Files" button logic
       document.getElementById("filesBtn").addEventListener("click", (e) => {
         accessSecureData();
       });
@@ -164,46 +256,62 @@
       });
 
       async function accessSecureData() {
-        // 1. Get the session to prove we are logged in
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (!session) {
-            alert("You are not logged in.");
+          showAlert("Not Logged In", "You are not logged in.", "error");
+          setTimeout(() => {
             window.location.href = "/";
-            return;
+          }, 2000);
+          return;
         }
 
-        // 2. Ask user for their password to decrypt the data
-        const password = prompt("To access your secure data, please re-enter your password:");
+        const password = await showPasswordModal();
+
         if (!password) {
-            alert("Password entry cancelled.");
-            return;
+          showAlert("Cancelled", "Password entry cancelled.", "info");
+          return;
         }
 
-        // 3. Call our new backend API
+        // Show loading state
+        const btn = document.getElementById("filesBtn");
+        const originalText = btn.innerHTML;
+        btn.innerHTML = 'Loading<span class="loading-spinner"></span>';
+        btn.disabled = true;
+
         try {
-            const response = await fetch("http://localhost:5000/api/access-file", {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${session.access_token}` // Send our login token
-                },
-                body: JSON.stringify({ password: password }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                // Show errors (e.g., "Invalid password")
-                alert(`Error: ${data.error}`);
-            } else {
-                // 4. Success! Show the decrypted data
-                alert(`SUCCESS!\n\nYour secret data is:\n\n"${data.decrypted_data}"`);
+          const response = await fetch(
+            "http://localhost:5000/api/access-file",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({ password: password }),
             }
+          );
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            showAlert("Error", data.error || "An error occurred", "error");
+          } else {
+            showAlert(
+              "Success!",
+              "Your secret data has been decrypted:",
+              "success",
+              data.decrypted_data
+            );
+          }
         } catch (error) {
-            alert(`Network error: ${error.message}`);
+          showAlert("Network Error", error.message, "error");
+        } finally {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
         }
       }
-      // --- END NEW LOGIC ---
 
       // Check authentication on page load
       checkAuth();

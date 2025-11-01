@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   background: linear-gradient(
     270deg,
@@ -60,6 +66,7 @@ body {
   padding: 0 7px;
   width: fit-content;
   height: max-content;
+  cursor: pointer;
 }
 
 #accountIcn {
@@ -70,6 +77,7 @@ body {
   border-radius: 60px;
   border: 3px solid rgba(255, 255, 255, 0.7);
   background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
 }
 
 #accountIcn svg {
@@ -103,6 +111,7 @@ body {
   padding: 0 7px;
   width: fit-content;
   height: max-content;
+  cursor: pointer;
 }
 
 #filesIcn {
@@ -113,6 +122,7 @@ body {
   border-radius: 60px;
   border: 3px solid rgba(255, 255, 255, 0.7);
   background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
 }
 
 #filesIcn svg {
@@ -144,4 +154,179 @@ body {
   font-style: normal;
   line-height: normal;
   padding: 3px 15px;
+  cursor: pointer;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  border: 8px solid #fff;
+  background: linear-gradient(270deg, #f597cf 0%, #83daf2 100%);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  padding: 40px;
+  border-radius: 20px;
+  max-width: 450px;
+  width: 90%;
+  animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal h3 {
+  color: #fff;
+  font-family: Jomhuria;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-bottom: 20px;
+  font-family: Jomhuria;
+  font-weight: normal;
+}
+
+.modal p {
+  color: #ffffff;
+  margin-bottom: 24px;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.modal input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 15px;
+  margin-bottom: 24px;
+  transition: border-color 0.3s;
+  font-family: Arial, sans-serif;
+  background: #fff;
+}
+
+.modal input:focus {
+  outline: none;
+  border-color: #83daf2;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 100px;
+  font-size: 30px;
+  font-family: Jomhuria;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-btn-primary {
+  color: white;
+  border: 2px solid white;
+  background: linear-gradient(270deg, #83daf2 0%, #f597cf 100%);
+}
+
+.modal-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(131, 218, 242, 0.4);
+}
+
+.modal-btn-secondary {
+  background: #f5f5f5;
+  color: #666;
+  border: 2px solid #ddd;
+}
+
+.modal-btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+.modal.error h3 {
+  color: #ffffff;
+}
+
+.modal.success h3 {
+  color: #ffffff;
+}
+
+.secret-data {
+  background: linear-gradient(
+    135deg,
+    rgba(131, 218, 242, 0.1) 0%,
+    rgba(245, 151, 207, 0.1) 100%
+  );
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid #83daf2;
+  margin: 20px 0;
+  font-family: "Courier New", monospace;
+  word-break: break-all;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
