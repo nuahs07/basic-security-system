@@ -3,7 +3,8 @@ from database.supabase_client import (
     supabase,
     supabase_admin,
     SUPABASE_URL,
-    SUPABASE_SERVICE_KEY
+    SUPABASE_SERVICE_KEY,
+    SUPABASE_ANON_KEY
 )
 from security_logic.lockout_manager import (
     check_lock_status,

@@ -25,9 +25,10 @@ def check_lock_status(user_id):
 
             if now_utc < unlock_at:
                 remaining = unlock_at - now_utc
+                remaining_total_seconds = int(remaining.total_seconds())
                 print(f"User {user_id} is locked. Unlock at: {unlock_at}, Now: {now_utc}")
                 # Return the remaining seconds for the timer
-                return True, f'Account locked. Try again in {remaining.seconds // 60} minutes {remaining.seconds % 60} seconds.', remaining.seconds
+                return True, f'Account locked. Try again in {remaining_total_seconds // 60} minutes {remaining_total_seconds % 60} seconds.', remaining_total_seconds
             else:
                  print(f"User {user_id} was locked, but lock expired.")
                  return False, "Lock expired.", 0
